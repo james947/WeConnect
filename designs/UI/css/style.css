@@ -23,11 +23,12 @@
 
 body{
     
-    background-image:url("/designs/UI/images/img2.jpeg");
+    background-image:url("/designs/UI/images/img.jpeg");
     background-repeat:no-repeat;
     background-position:cover;
 }/*background modifications*/
 
 #sform{
-    width: 400px;
+    width: 600px;
+    margin-left: 350px;
 }/*width of the signup form*/
