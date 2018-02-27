@@ -28,3 +28,6 @@ body{
     background-position:cover;
 }/*background modifications*/
 
+#sform{
+    width: 400px;
+}/*width of the signup form*/
