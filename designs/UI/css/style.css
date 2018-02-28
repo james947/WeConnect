@@ -23,7 +23,7 @@
 
 body{
     
-    background-image:url("/designs/UI/images/img.jpeg");
+    background-image:url('/designs/UI/images/img.jpg');
     background-repeat:no-repeat;
     background-position:cover;
 }/*background modifications*/
