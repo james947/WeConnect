@@ -1,0 +1,30 @@
+/**resizing the logo to fit navbar**/
+.logo{
+    height: 50px;
+    padding-left: 5px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}/*Logo modifications to fit the navbar*/
+
+
+.claM{
+
+    margin-top: 170px;
+
+}/*custom class that adds margin top*/
+
+.claP{
+
+    padding-left: 80px;
+
+}/*adds padding from left top*/
+    
+
+
+body{
+    
+    background-image:url("/designs/UI/images/img2.jpeg");
+    background-repeat:no-repeat;
+    background-position:cover;
+}/*background modifications*/
+
