@@ -43,3 +43,13 @@ footer {
 .CC{
     padding-bottom: 250px;
 }
+
+#login_page{
+    color:#ffffff;
+    font-size:25px;
+    font-weight: bold;
+}
+
+#footer2{
+    margin-top:100px;
+}
