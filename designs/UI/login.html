@@ -5,6 +5,7 @@
     <title>WeConect</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="css/bootstrap.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="css/font-awesome.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -32,13 +33,20 @@
               <div class="panel-heading">Login</div>
               <div class="panel-body">
                   <form>
+                            
                       <div class="form-group">
-                        <label for="email">Email address:</label>
-                        <input type="email" class="form-control" name="email">
+                          <label for="Email">Email</label>
+                          <div class="input-group">
+                              <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                          <input type="Email" class="form-control" name="email">
+                           </div>
                       </div>
                       <div class="form-group">
-                        <label for="pwd">Password:</label>
-                        <input type="password" class="form-control" name="pwd">
+                          <label for="password">Password</label>
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                            <input type="password" class="form-control" name="password">
+                          </div>
                       </div>
                     <button type="submit" class="btn btn-success btn-block">Submit</button><hr>
                     <p>Not registered Create account to get started <a href="signup.html">Signup</a></p>
