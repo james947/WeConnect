@@ -1,6 +1,6 @@
 WECONNECT
 ====
-
+![Imgur](https://i.imgur.com/urrmxwS.png)
 Features
 ===
 The users can perform the following functions:
