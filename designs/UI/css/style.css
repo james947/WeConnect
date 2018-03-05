@@ -1,0 +1,66 @@
+/**resizing the logo to fit navbar**/
+.logo{
+    height: 50px;
+    padding-left: 5px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}/*Logo modifications to fit the navbar*/
+
+
+.claM{
+
+    margin-top: 120px;
+
+}/*custom class that adds margin top*/
+.nav ul{
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+}
+
+.claP{
+
+    padding-left: 80px;
+
+}/*adds padding from left top*/
+
+.panel{
+    border: 0px;
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+}
+    
+
+
+body{
+    
+    background-image:url('../images/img.jpg');
+    background-repeat:no-repeat;
+    background-position:cover;
+    font-family: sans-serif;
+}/*background modifications*/
+
+#sform{
+    width: 600px;
+    margin-left: 350px;
+}/*width of the signup form*/
+
+footer {
+    background-color: #2d2d30;
+    color: #f5f5f5;
+    padding: 32px;
+    padding-top:px;
+}/*footer*/
+
+.CC{
+    padding-bottom: 250px;
+}
+
+#login_page{
+    color:#ffffff;
+    font-size:25px;
+    font-weight: bold;
+}
+
+#footer2{
+    margin-top:100px;
+}
