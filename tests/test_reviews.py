@@ -60,3 +60,26 @@ class TestIntegrations(TestCase):
         self.assertEqual(response.status_code,201)
         response=self.app.get('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/5')
         response = self.assertEqual(response.status_code,400)
+
+    def test_update_review(self):
+        """
+        tests if APi updates review
+        """
+        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
+        self.assertEqual(response.status_code,201)
+        response=self.app.put('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1', data=dict(title="your app",descritpion="Has bugs"))
+        self.assertEqual(response.status_code,200)
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn("review updated", response_msg["Message"]) 
+    
+    def test_delete_review(self):
+        """
+        Tests Api deletes review
+        """
+        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
+        self.assertEqual(response.status_code,201)
+        response=self.app.delete('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1', data=dict(title="your app",descritpion="Has bugs"))
+        self.assertEqual(response.status_code,200)
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn("review deleted", response_msg["Message"])
+        
