@@ -8,3 +8,4 @@ class Business():
         self.category = category
         self.id = Business.count
         Business.count +=1
+
