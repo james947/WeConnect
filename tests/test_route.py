@@ -43,7 +43,7 @@ class TestIntegrations(TestCase):
         data=dict(name="",email="james20@yahoo.com",password=123456),content_type="application/json")
         self.assertEqual(response.status_code,400)
         response_msg = json.loads(response.data.decode("UTF-8"))
-        self.assertIn("Username cannot be null",response_msg["Message"])
+        self.assertIn("Username or Password cannot be null",response_msg["Message"])
         
     def test_if_null_registration_password(self):
         """
@@ -119,7 +119,7 @@ class TestIntegrations(TestCase):
         self.assertEqual(response.status_code,400)
         self.assertIn("Username not correct",response_msg["Message"])
 
-#executes tests
-if __name__ == "__main__":
-    unittest.main()
+# #executes tests
+# if __name__ == "__main__":
+#     unittest.main()
 
