@@ -18,7 +18,7 @@ class TestIntegrations(TestCase):
         Api creates a new review
 
         """
-        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=self.reviews)
+        response=self.app.post('/api/auth/v1/business/1/reviews', data=self.reviews)
         self.assertEqual(response.status_code,201)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("review added", response_msg["Message"]) 
@@ -27,7 +27,7 @@ class TestIntegrations(TestCase):
         """"
         tests APi result if preview title is null
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
+        response = self.app.post('/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
         self.assertEqual(response.status_code,403)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Title is required", response_msg["Message"]) 
@@ -36,7 +36,7 @@ class TestIntegrations(TestCase):
         """"
         tests APi result if preview title is null
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
+        response = self.app.post('/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
         self.assertEqual(response.status_code,404)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Title is required", response_msg["Message"]) 
@@ -47,27 +47,27 @@ class TestIntegrations(TestCase):
         Test if APi gets review
 
         """
-        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=self.reviews)
+        response=self.app.post('/api/auth/v1/business/1/reviews', data=self.reviews)
         self.assertEqual(response.status_code,201) 
-        response=self.app.get('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1')
+        response=self.app.get('/api/auth/v1/business/1/reviews/1')
         response = self.assertEqual(response.status_code,200)
 
     def test_get_invalid_review(self):
         """
         Tests Api when request is invalid
         """
-        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=self.reviews)
+        response=self.app.post('/api/auth/v1/business/1/reviews', data=self.reviews)
         self.assertEqual(response.status_code,201)
-        response=self.app.get('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/5')
+        response=self.app.get('/api/auth/v1/business/1/reviews/5')
         response = self.assertEqual(response.status_code,400)
 
     def test_update_review(self):
         """
         tests if APi updates review
         """
-        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
+        response=self.app.post('/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
         self.assertEqual(response.status_code,201)
-        response=self.app.put('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1', data=dict(title="your app",descritpion="Has bugs"))
+        response=self.app.put('/api/auth/v1/business/1/reviews/1', data=dict(title="your app",descritpion="Has bugs"))
         self.assertEqual(response.status_code,200)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("review updated", response_msg["Message"]) 
@@ -76,9 +76,9 @@ class TestIntegrations(TestCase):
         """
         Tests Api deletes review
         """
-        response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
+        response=self.app.post('/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
         self.assertEqual(response.status_code,201)
-        response=self.app.delete('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1')
+        response=self.app.delete('/api/auth/v1/business/1/reviews/1')
         self.assertEqual(response.status_code,200)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("review deleted", response_msg["Message"])

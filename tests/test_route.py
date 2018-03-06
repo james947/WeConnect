@@ -1,4 +1,4 @@
-from source.api import app
+from source.routes.api import app
 from unittest import TestCase
 import json
 
@@ -20,7 +20,7 @@ class TestIntegrations(TestCase):
         returns users in the system
 
         """
-        response = self.app.get('http://127.0.0.1:5000/api/v1/users')
+        response = self.app.get('/api/v1/users')
         self.assertEqual(response.status_code,200)
 
     def test_users_registration(self):    
@@ -28,8 +28,7 @@ class TestIntegrations(TestCase):
         tests user registration in the system
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
-        data=self.person,content_type="application/json")
+        response = self.app.post('/api/auth/v1/register',data=self.person,content_type="application/json")
         self.assertEqual(response.status_code,201)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("User successfully registered", response_msg["Message"]) 
@@ -39,8 +38,7 @@ class TestIntegrations(TestCase):
         tests if username is null 
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
-        data=dict(name="",email="james20@yahoo.com",password=123456),content_type="application/json")
+        response = self.app.post('/api/auth/v1/register',data=dict(name="",email="james20@yahoo.com",password=123456),content_type="application/json")
         self.assertEqual(response.status_code,400)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Username or Password cannot be null",response_msg["Message"])
@@ -50,7 +48,7 @@ class TestIntegrations(TestCase):
         tests if registration password is null
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
+        response = self.app.post('/api/auth/v1/register',
         data=dict(name="james",email="james20@yahoo.com",password=""),content_type="application/json")
         self.assertEqual(response.status_code,400)
         response_msg = json.loads(response.data.decode("UTF-8"))
@@ -61,7 +59,7 @@ class TestIntegrations(TestCase):
         returns correct login
 
         """
-        response= self.app.post('http://127.0.0.1:5000/api/auth/v1/login',
+        response= self.app.post('/api/auth/v1/login',
         data=json.dumps(dict(username="test122",password=122)),content_type="application/json")
         self.assertEqual(response.status_code,200)
         response_msg = json.loads(response.data.decode("UTF-8"))
@@ -72,9 +70,9 @@ class TestIntegrations(TestCase):
         tests if API returns an error upon login without username
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
+        response = self.app.post('/api/auth/v1/register',
         data=dict(username="test122",password=122),content_type="application/json")
-        response= self.app.post('http://127.0.0.1:5000/api/auth/v1/login',
+        response= self.app.post('/api/auth/v1/login',
         data=dict(username="",password=122),content_type="application/json")
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertEqual(response.status_code,400)
@@ -85,9 +83,9 @@ class TestIntegrations(TestCase):
         test if API returns an error upon login with a null password
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
+        response = self.app.post('/api/auth/v1/register',
         data=dict(username="test122",password=122),content_type="application/json")
-        response= self.app.post('http://127.0.0.1:5000/api/auth/v1/login',
+        response= self.app.post('/api/auth/v1/login',
         data=dict(username="test122",password=""),content_type="application/json")
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertEqual(response.status_code,400)
@@ -98,9 +96,9 @@ class TestIntegrations(TestCase):
         tests API if login Works With A wrong password
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
+        response = self.app.post('/api/auth/v1/register',
         data=dict(username="test122",password=122),content_type="application/json")
-        response= self.app.post('http://127.0.0.1:5000/api/auth/v1/login',
+        response= self.app.post('/api/auth/v1/login',
         data=dict(username="test122",password=555),content_type="application/json")
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertEqual(response.status_code,400)
@@ -111,9 +109,9 @@ class TestIntegrations(TestCase):
         tets if API accepts login with a wrong username
 
         """
-        response = self.app.post('http://127.0.0.1:5000/api/auth/v1/register',
+        response = self.app.post('/api/auth/v1/register',
         data=dict(username="test122",password=122),content_type="application/json")
-        response= self.app.post('http://127.0.0.1:5000/api/auth/v1/login',
+        response= self.app.post('/api/auth/v1/login',
         data=dict(username="james",password=555),content_type="application/json")
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertEqual(response.status_code,400)
