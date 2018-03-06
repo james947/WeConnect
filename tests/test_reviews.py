@@ -78,7 +78,7 @@ class TestIntegrations(TestCase):
         """
         response=self.app.post('http://127.0.0.1:5000/api/auth/v1/business/1/reviews', data=dict(title="your app",descritpion="it is awesome"))
         self.assertEqual(response.status_code,201)
-        response=self.app.delete('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1', data=dict(title="your app",descritpion="Has bugs"))
+        response=self.app.delete('http://127.0.0.1:5000/api/auth/v1/business/1/reviews/1'))
         self.assertEqual(response.status_code,200)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("review deleted", response_msg["Message"])
