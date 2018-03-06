@@ -88,6 +88,6 @@ class TestIntegrations(TestCase):
         data=dict(username="james",password=555),content_type="application/json")
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertEqual(response.status_code,400)
-        self.assertIn("Password not correct",response_msg["Message"])
+        self.assertIn("Username not correct",response_msg["Message"])
 
 
