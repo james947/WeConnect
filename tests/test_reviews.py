@@ -1,4 +1,4 @@
-from source.api import app
+from source.routes.api import app
 from unittest import TestCase
 import json
 
