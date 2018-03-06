@@ -28,7 +28,7 @@ class TestIntegrations(TestCase):
         tests APi result if preview title is null
         """
         response = self.app.post('/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
-        self.assertEqual(response.status_code,403)
+        self.assertEqual(response.status_code,401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Title is required", response_msg["Message"]) 
 
@@ -37,7 +37,7 @@ class TestIntegrations(TestCase):
         tests APi result if preview title is null
         """
         response = self.app.post('/api/auth/v1/business/1/reviews',data=dict(title="",descritpion="Your app is great"))
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Title is required", response_msg["Message"]) 
 

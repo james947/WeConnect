@@ -19,16 +19,22 @@ class TestIntegrations(TestCase):
         pass
 
     def test_business_registration(self):
-        # test business successfully is registered
+        """ 
+        test business successfully is registered
+
+        """
         response = self.app.post(
             '/api/auth/v1/business', data=self.business)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Business successfully registered",
                       response_msg["Message"])
 
     def test_returns_all_businesses(self):
-        # test all businesses are returned
+        """ 
+        test all businesses are returned
+
+        """
         response = self.app.post(
             '/api/auth/v1/business', data=self.business)
         self.assertEqual(response.status_code, 201)
@@ -38,6 +44,7 @@ class TestIntegrations(TestCase):
     def test_api_can_get_business_by_id(self):
         """
         get business by id
+
         """
         response = self.app.post(
             '/api/auth/v1/business', data=self.business)
@@ -75,7 +82,7 @@ class TestIntegrations(TestCase):
         """
         response = self.app.post('/api/auth/v1/business',
                                 data=dict(businessname="", description="we sell laptops", category="electronics", location="juja"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Business name cannot be empty", response_msg['Message'])
 
@@ -83,7 +90,7 @@ class TestIntegrations(TestCase):
         # tests addition of a null category
         response = self.app.post('/api/auth/v1/business',
                                 data=dict(businessname="techbase", description="we sell laptops", category="", location="juja"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Category name cannot be empty", response_msg['Message'])
 
@@ -91,7 +98,7 @@ class TestIntegrations(TestCase):
         # tests addition of a null location
         response = self.app.post('/api/auth/v1/business',
                                 data=dict(businessname="techbase", description="we sell laptops", category="electronics", location=""))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Location name cannot be empty", response_msg['Message'])
 
@@ -101,7 +108,7 @@ class TestIntegrations(TestCase):
         """
         response = self.app.post('/api/auth/v1/business',
                                 data=dict(businessname="techbase", description="", category="electronics", location="juja"))
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Description name cannot be empty",
                       response_msg['Message'])
