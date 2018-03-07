@@ -2,19 +2,17 @@ from flask import Flask, jsonify, abort, request
 from source.models.business import Business
 from source.models.users import User
 import uuid
-from werkzeug.security import generate_password_hash, check_password_hash
 from passlib.hash import sha256_crypt
-import jwt
 import datetime
 
 app = Flask(__name__)
-
-app.config['SECRET_KEY']="b'409ce0cacf23b39b71faccfcb2f9fc3051c587d6155efa77'"
 """
 Enables use of token
-
 """
+app.config['SECRET_KEY']="b'409ce0cacf23b39b71faccfcb2f9fc3051c587d6155efa77'"
 
+
+business_instance=Business()
 user_instance = User()
 # def add_user(username,email,password,public_id):
 #     new_user=dict(username=username,email=email,password=password,public_id=public_id)
@@ -34,37 +32,53 @@ def create_user():
         return jsonify({'message':'Invalid input, please try again!'})
 
     password=sha256_crypt.encrypt(str(password))
-    print (password)
     user_instance.create_user(id, username, email, password)
-    print(user_instance.users)
     return jsonify({'Message':'User successfully registered'}),201
 
-@app.route('/api/auth/login', methods = ['POST'])
+@app.route('/api/v1/login', methods = ['POST'])
 def login():
-    user=request.get_json()
-    username = user['username']
-    password =user['password']
+    """
+    if request is validated then user is logged in
+    """
+    user_request=request.get_json()
+    username == user_request['username']
+    password  == user_request['password']
+
+    #user =[biz for biz in user_instance.users if biz['username'] ==username and biz['passworrd']==password]
     for user in user_instance.users:
-       if user.username['username'] == "" or  user.password['password'] == "":
-            return jsonify({'message': 'Username / password ivalid, please try again!'})
-    return jsonify({'message':'logged in successfully'}),201
+        if user['username'] == username and user['password'] == password:
+            user_instance.logged_in= True
+            print(user_instance.logged_in)
+            return jsonify({'message':'logged in successfully'}), 200
+    else:
+        return jsonify({'message': 'Username / password ivalid, please try again!'})
+      
             
 
 
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
-    return jsonify({"users": user_instance.users}), 200
+    user_instance.users
+    return jsonify(user_instance.users), 200
 
 @app.route('/api/v1/business', methods=['POST'])
 def register_business():
     new_business = request.get_json()
-    business = new_business['businessname']
+    businessname = new_business['businessname']
     description=new_business['description']
     category =new_business['category']
     location =new_business['location']
 
-    if not business or not description or not category or not location:
+    if not businessname or not description or not category or not location:
          return jsonify({'message':'Invalid input, please try again!'})
+    for busines in business_instance.business:
+        if busines['businessname'] ==businessname:
+            return jsonify({'message':'Business already exists'})
+
+    business_instance.create_business(id,businessname,description,location,category)
+    return jsonify({'Message':'Business successfully registered'}),201
+
+    
 
 
     
