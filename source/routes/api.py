@@ -58,10 +58,15 @@ def login():
 
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
-    user_instance.users
-    return jsonify(user_instance.users), 200
+    for users in user_instance.users:
+        found_users={
+            'username':users['username'],
+            'password':users['password']
+        }
+        return jsonify(found_users), 200
 
 @app.route('/api/v1/business', methods=['POST'])
+    # """Registers non existing businesses"""
 def register_business():
     new_business = request.get_json()
     businessname = new_business['businessname']
@@ -78,7 +83,17 @@ def register_business():
     business_instance.create_business(id,businessname,description,location,category)
     return jsonify({'Message':'Business successfully registered'}),201
 
-    
+
+@app.route('/api/v1/business/<int:business_id>/', methods=['POST'])
+def get_by_id(business_id):
+    #Returns the requested business by id
+    query_business=[business for business in business_instance.business if business['id'] == business_id]
+    if len(query_business) < 0: 
+         return  jsonify({'message':'business not found'}),404
+    return jsonify(query_business)
+
+
+
 
 
     
