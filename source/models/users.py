@@ -1,18 +1,9 @@
 class User:
-    count =0
-    def __init__(self):
-        self.users = []
-        self.logged_in = {}
+    count =1 #icrease user id when user signs up
     
-    def create_user(self, id, username, email, password):
-        print('ddtuf',username,email,password)
-        new_user = {
-            'id':User.count +1,
-            'username': username,
-            'email': email,
-            'password': password
-        }
-
-        self.users.append(new_user)
+    def __init__(self,username,email,password):
+        self.username = username
+        self.email =email
+        self.password = password
+        self.id = User.count
         User.count +=1
-    
