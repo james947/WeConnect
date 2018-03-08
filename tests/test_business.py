@@ -15,9 +15,6 @@ class TestIntegrations(TestCase):
             "location": "River road"
         }
 
-    def teardown(self):
-        del self.business
-        pass
 
     def test_business_registration(self):
         """ 
@@ -126,3 +123,6 @@ class TestIntegrations(TestCase):
     #     self.assertEqual(response.status_code, 404)
 
 
+    def teardown(self):
+        del self.business
+        pass
