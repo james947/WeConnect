@@ -5,9 +5,8 @@ class Reviews():
 
     def create_user(self, id, username,title,reviews):
         """Create user then append to list reviews"""
-        count =0
         new_reviews = {
-            'id':count+1,
+            'id':id,
             'username': username,
             'title':title,
             'review':reviews
