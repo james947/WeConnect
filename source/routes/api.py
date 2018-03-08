@@ -7,10 +7,14 @@ import re
 
 app = Flask(__name__)
 
-
-business_instance=Business()
-user_instance = User()
-
+USERS = [
+    {
+        'id':'',
+        'email':'',
+        'username':'',
+        'password':''
+    }
+]
     
 @app.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
@@ -21,11 +25,10 @@ def create_user():
     email = user['email']
     username = user['username']
     password= user['password']
-
-    for user in user_instance.users:
-        if user['email'] == email:
-            return jsonify({'message':'Email is already registered'})
-    
+    user_request=[user for user in USERS]
+    if user_request['email'] == email:
+    # if email in USERS == email:
+        return jsonify({'message':'Email is already registered'}) 
     if username == "":
         return jsonify({'message':'Username is required'})
     
@@ -38,7 +41,8 @@ def create_user():
         return jsonify({'message':'Password is required'})
 
     password=sha256_crypt.encrypt(str(password))
-    user_instance.create_user(id,username, email, password)
+    new_user=User(username, email, password)
+    USERS.append(new_user)
     return jsonify({'Message':'User successfully registered'}),201
 
 @app.route('/api/v1/login', methods = ['POST'])
