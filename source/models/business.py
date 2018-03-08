@@ -1,11 +1,19 @@
 class Business():
     #initialize count to add when business is registered
-    count = 1
-    def __init__(self,name,description,location,category):
-        self.name = name
-        self.description = description
-        self.location = location
-        self.category = category
-        self.id = Business.count
-        Business.count +=1
+ 
+    def __init__(self):
+        self.business=[]
 
+    def create_business(self,id,businessname,description,location,category):
+        count =0
+        new_business={
+            'id':count + 1,
+            'businessname':businessname,
+            'description':description,
+            'location':location,
+            'category':category,
+                }
+
+        self.business.append(new_business)
+
+        return self.business
