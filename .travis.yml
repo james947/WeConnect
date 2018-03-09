@@ -5,7 +5,7 @@ python :
   - "3.6"
 install:
   - pip install -r requirements.txt
-script: cd ./tests && nosetests --with-coverage --cover-package=source
+script: nosetests --with-coverage --cover-package=source
 
 after_success: 
   - coveralls
