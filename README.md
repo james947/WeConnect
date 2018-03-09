@@ -1,5 +1,6 @@
 WECONNECT
 ====
+[![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=master)](https://coveralls.io/github/james947/WeConnect?branch=master)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
 Features
 ===
@@ -17,7 +18,30 @@ Prerequisites
 ----
 This are html pages and can run in any browser that supports html eg.
 * Chrome , internet explorer, Safari e.t.c
+* postman for accessing API endpoints
 
+Running the API
+---
+Locate the app.py
+----
+
+```
+  
+   cd/WeConnect3
+   cd/Weconnect3/routes/api.py
+   Access the endpoints to use on the API with POSTMAN
+
+
+```
+
+Running tests
+---
+```
+activate virtual env
+install pip requirements
+pip -r requirements.txt
+run nosetests
+```
 Built With
 ---
 1. HTML /CSS
