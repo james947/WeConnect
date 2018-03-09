@@ -7,14 +7,7 @@ import re
 
 app = Flask(__name__)
 
-USERS = [
-    {
-        'id':'',
-        'email':'',
-        'username':'',
-        'password':''
-    }
-]
+USERS = []
     
 @app.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
@@ -25,11 +18,11 @@ def create_user():
     email = user['email']
     username = user['username']
     password= user['password']
-    user_request=[user for user in USERS]
-    if user_request['email'] == email:
-    # if email in USERS == email:
+    available_emails = [x.email for x in USERS]
+   
+    if email in available_emails:
         return jsonify({'message':'Email is already registered'}) 
-    if username == "":
+    elif username == "":
         return jsonify({'message':'Username is required'})
     
     elif email== "":
