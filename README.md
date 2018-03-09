@@ -1,7 +1,7 @@
 WECONNECT
 ====
 [![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=challenge_2)](https://coveralls.io/github/james947/WeConnect?branch=master)
-[![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=master)](https://travis-ci.org/james947/WeConnect)
+[![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=challenge_2)](https://travis-ci.org/james947/WeConnect)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/982f0c5de2f04f318156fb8f9a095e3b)](https://www.codacy.com/app/james947/WeConnect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=james947/WeConnect&amp;utm_campaign=Badge_Grade)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
 Features
