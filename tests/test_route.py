@@ -1,12 +1,10 @@
 from source.routes.api import app
-from unittest import TestCase
+import unittest 
 from source.models.users import User
 
 
 import json
-# from passlib.hash import sha256_crypt
-#import USERS from api
-class TestIntegrations(TestCase):
+class TestUsersTestcase(unittest.TestCase):
     def setUp(self):
         app.testing = True
         self.app = app.test_client()
@@ -18,13 +16,13 @@ class TestIntegrations(TestCase):
 
 
 
-    # def test_users_in_data(self):
-    #     """
-    #     returns users in the system
+    def test_get_all_users(self):
+        """
+        returns users in the system
 
-    #     """
-    #     response = self.app.get('/api/v1/users', data=json.dumps(dict(self.person)))
-    #     self.assertEqual(response.status_code,200)
+        """
+        response = self.app.get('/api/v1/users', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        self.assertEqual(response.status_code,200)
 
     def test_users_registration_empty_username(self):    
         """
@@ -62,43 +60,53 @@ class TestIntegrations(TestCase):
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("User successfully registered", response_msg["Message"])
 
+        def test_users_registration_correct_logi(self):
+            """tests  correct login registaartion"""
+            response = self.app.post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
+            response_msg=json.loads(response.data.decode())        
+            self.assertEqual(response.status_code,201)
+            response_msg = json.loads(response.data.decode("UTF-8"))
+            self.assertIn("User successfully registered", response_msg["Message"])
+
+
+
      
+    def test_login(self):
+        """
+        returns correct login
 
-    # def test_login(self):
-    #     """
-    #     returns correct login
-
-    #     """
-    #     response= self.app.post('/api/auth/v1/login', data=json.dumps(self.person), headers={'content-type':"application/json"})
-    #     self.assertEqual(response.status_code,200)
-    #     response_msg = json.loads(response.data.decode("UTF-8"))
-    #     self.assertIn("Successful Logged in",response_msg["message"])
+        """
+        response= self.app.post('/api/auth/v1/login', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        self.assertEqual(response.status_code,200)
+        response_msg = json.loads(response.data.decode())
+        self.assertIn("Successful Logged in",response_msg["message"])
         
-    # def test_login_without_user_email(self):
-    #     """
-    #     tests if API returns an error upon login without username
 
-    #     """
-    #     response= self.app.post('/api/auth/v1/login',
-    #     data=self.person,content_type="application/json")
-    #     if self.person['email'] =="":
-    #         self.assertEqual(response.status_code,401)
-    #         response_msg = json.loads(response.data.decode("UTF-8"))
-    #         self.assertIn("Email is required",response_msg["message"])
+    def test_login_without_user_email(self):
+        """
+        tests if API returns an error upon login without username
+
+        """
+        response= self.app.post('/api/auth/v1/login',
+        data=self.person,content_type="application/json")
+        if self.person['email'] =="":
+            self.assertEqual(response.status_code,401)
+            response_msg = json.loads(response.data.decode("UTF-8"))
+            self.assertIn("Email is required",response_msg["message"])
             
         
 
 
-    # def test_login_with_an_empty_password(self):
-    #     """
-    #     test if API returns an error upon login with a null password
+    def test_login_with_an_empty_password(self):
+        """
+        test if API returns an error upon login with a null password
 
-    #     """
-    #     response = self.app.post('/api/auth/v1/login',data=self.person,content_type="application/json")
-    #     if self.person['password'] =="":
-    #         self.assertEqual(response.status_code,401)
-    #         response_msg = json.loads(response.data.decode("UTF-8"))
-    #         self.assertIn("Password is required",response_msg["message"])
+        """
+        response = self.app.post('/api/auth/v1/login',data=self.person,content_type="application/json")
+        if self.person['password'] =="":
+            self.assertEqual(response.status_code,401)
+            response_msg = json.loads(response.data.decode("UTF-8"))
+            self.assertIn("Password is required",response_msg["message"])
 
     # def test_login_with_a_wrong_password(self):
     #     """
@@ -113,19 +121,21 @@ class TestIntegrations(TestCase):
     #     self.assertEqual(response.status_code,401)
     #     self.assertIn("Password not correct",response_msg["message"])
 
-    # def test_login_with_a_wrong_email(self):
-    #     """
-    #     tets if API accepts login with a wrong username
+    def test_login_with_a_wrong_email(self):
+        """
+        tets if API accepts login with a wrong username
 
-    #     """
-    #     response = self.app.post('/api/auth/v1/register',
-    #     data=json.dumps(dict(email="j.@gmail.com",password=122)),content_type="application/json")
-    #     response= self.app.post('/api/auth/v1/login',
-    #     data=json.dumps(dict(email="james",password=122)),content_type="application/json")
-    #     response_msg = json.loads(response.data.decode("UTF-8"))
-    #     self.assertEqual(response.status_code,401)
-    #     self.assertIn("Email is invalid",response_msg["message"])
+        """
+        response= self.app.post('/api/auth/v1/login',
+        data=json.dumps(dict(email="james",password=122)),content_type="application/json")
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertEqual(response.status_code,401)
+        self.assertIn("Email is invalid",response_msg["message"])
 
 
     def teardown(self):
         del self.person
+
+
+if __name__ == '__main__':
+     app.run(debug=True)
