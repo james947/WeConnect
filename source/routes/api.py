@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, make_response
 from source.models.business import Business
 from source.models.users import User
 from passlib.hash import sha256_crypt
@@ -59,7 +59,9 @@ def login():
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
-    return jsonify(user_instance.users), 200
+    return make_response(jsonify(user_instance.users),200)
+
+
 
 
 @app.route('/api/v1/business', methods=['POST'])
@@ -173,6 +175,10 @@ def get_business_by_location(location):
 
 
 
+# @app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
+# def add_review(review):
+#     new_review = request.get_json()
+#         reviewtitle = new_review['review']
 
 
 
