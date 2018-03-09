@@ -6,9 +6,9 @@ python :
 
 install:
   -pip install -r requirements.txt
-  -pip instal coveralls
+  -pip install coveralls 
 script: 
-  -nosetests--with--coverage--cover-package=source
+  -nosetests --with-coverage --cover-package=source
 after_success: 
   -coveralls
 
