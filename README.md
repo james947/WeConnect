@@ -1,6 +1,6 @@
 WECONNECT
 ====
-[![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=master)](https://coveralls.io/github/james947/WeConnect?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=challenge_2)](https://coveralls.io/github/james947/WeConnect?branch=master)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
 Features
 ===
