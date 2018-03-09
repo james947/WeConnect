@@ -29,7 +29,7 @@ class TestIntegrations(TestCase):
         """
         response = self.app.post('/api/v1/business', data=json.dumps(self.business), headers={'content-type':'application/json'})
         self.assertEqual(response.status_code, 201)
-        response_msg = json.loads(response.data.decode("UTF-8"))
+        response_msg = json.loads(response.data.decode())
         self.assertIn("Business successfully registered", response_msg["Message"])
 
     def test_returns_all_businesses(self):
@@ -48,7 +48,7 @@ class TestIntegrations(TestCase):
 
         """
         response = self.app.post(
-            '/api/auth/v1/business', data=self.business)
+            '/api/v1/business', data=self.business)
         self.assertEqual(response.status_code, 201)
         result_in_json = json.loads(
             response.data.decode('utf-8').replace("'", "\""))
@@ -62,7 +62,7 @@ class TestIntegrations(TestCase):
         tests if the id is not valid
         """
         response = self.app.post(
-            '/api/auth/v1/business', data=self.business)
+            '/api/v1/business', data=self.business)
         self.assertEqual(response.status_code, 201)
         response = self.app.get('/api/auth/v1/business/4')
         self.assertEqual(response.status_code, 404)
@@ -73,35 +73,35 @@ class TestIntegrations(TestCase):
         """
         tests addition of a null name
         """
-        response = self.app.post('/api/auth/v1/business', data=json.dumps(dict(businessname="")),
+        response = self.app.post('/api/v1/business', data=json.dumps(dict(businessname="")),
                                  headers={'content-type': 'application/json'})
         self.assertEqual(response.status_code, 401)
-        response_msg = json.loads(response.data.decode("UTF-8"))
+        response_msg = json.loads(response.data.decode())
         self.assertIn("Business name cannot be empty", response_msg['Message'])
 
     def test_add_empty_business_category(self):
         # tests addition of a null category
-        response = self.app.post('/api/auth/v1/business',
+        response = self.app.post('/api/v1/business',
                                 data=dict(businessname="techbase", description="we sell laptops", category="", location="juja"))
         self.assertEqual(response.status_code, 401)
-        response_msg = json.loads(response.data.decode("UTF-8"))
+        response_msg = json.loads(response.data.decode())
         self.assertIn("'Category required'", response_msg['Message'])
 
     def test_add_empty_business_location(self):
         # tests addition of a null location
-        response = self.app.post('/api/auth/v1/business',
+        response = self.app.post('/api/v1/business',
                                 data=dict(businessname="techbase", description="we sell laptops", category="electronics", location=""))
         self.assertEqual(response.status_code, 401)
-        response_msg = json.loads(response.data.decode("UTF-8"))
+        response_msg = json.loads(response.data.decode())
         self.assertIn("Location required", response_msg['Message'])
 
     def test_add_empty_business_description(self):
         """
         tests addition of a null description
         """
-        response = self.app.post('/api/auth/v1/business',data=json.dumps(dict(businessname="techbase", description="", category="electronics", location="juja")))
+        response = self.app.post('/api/v1/business',data=json.dumps(dict(businessname="techbase", description="", category="electronics", location="juja")))
         self.assertEqual(response.status_code, 401)
-        response_msg = json.loads(response.data.decode("UTF-8"))
+        response_msg = json.loads(response.data.decode())
         self.assertIn("Description is required",
                       response_msg['Message'])
 
@@ -109,24 +109,24 @@ class TestIntegrations(TestCase):
         """
         tests if business posted can be edited
         """
-        response = self.app.post('/api/auth/v1/business',
+        response = self.app.post('/api/v1/business',
                                  data=dict(businessname="techbase", description="we sell laptops", category="electronics", location="juja"))
         self.assertEqual(response.status_code, 201)
-        response = self.app.put('/api/auth/v1/business/1',
+        response = self.app.put('/api/v1/business/1',
                                 data=dict(businessname="Ramtoms", description="sell iron boxes", category="electronics", location="juja"))
         self.assertEqual(response.status_code, 200)
-        results = self.app.get('/api/auth/v1/business/1')
+        results = self.app.get('/api/v1/business/1')
         self.assertIn("sell iron boxes", str(results.data))
 
     def test_delete(self):
         """test API can delete business"""
-        response = self.app.post('/api/auth/v1/business',
+        response = self.app.post('/api/v1/business',
                                  data=dict(businessname="techbase", description="we sell laptops", category="electronics", location="juja"))
         self.assertEqual(response.status_code, 201)
-        response = self.app.delete('http: // 127.0.0.1: 5000/api/auth/v1/business/1')
+        response = self.app.delete('http: // 127.0.0.1: 5000/api/v1/business/1')
         response = self.assertEqual(response.status_code, 200)
         # tests to see if business exists
-        response = self.app.get('/api/auth/v1/business/1')
+        response = self.app.get('/api/v1/business/1')
         self.assertEqual(response.status_code, 404)
 
 
