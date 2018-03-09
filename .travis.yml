@@ -1,0 +1,19 @@
+
+language: python
+
+python :
+   3.6.2
+
+install:
+  -pip install -r requirements.txt
+  -pip instal coveralls
+script: 
+  -nosetests--with--coverage--cover-package=source
+after_success: 
+  -coveralls
+
+notifications:
+  slack:
+    on_success: never
+    on_failure: never
+  email: false
