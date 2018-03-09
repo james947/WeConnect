@@ -45,40 +45,40 @@ def create_user():
 def login():
     """if request is validated then user is logged in."""
     user_request=request.get_json()
-    user =[username for username in user_instance.users if username['email'] ==user_request['email'] and username['password']==user_request['password']]
-    print('hduhwd',user)
-    if user:
-        return jsonify({'message':'logged in successfully'}), 200
-
-    # if not user_request['username'] or if not user_request['password']: 
-    #     return jsonify({'message': 'Username / password ivalid, please try again!'})
+    for user in user_instance.users:
+        if user['email'] ==user_request['email'] and user['password'] ==  user_request['password']:
+            return jsonify({'message':'logged in successfully'}), 200
+        elif user_request['email'] == "":
+            return jsonify({'message':'Email is required'}),401
+        elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",user_request['email']):
+            return jsonify({'message':'Email is invalid'}),400
+        elif user_request['password'] == "":
+            return jsonify({'message':'Password is required'}),401
       
 
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
-    return jsonify(user_instance.users)
+    return jsonify(user_instance.users), 200
 
 
 @app.route('/api/v1/business', methods=['POST'])
 def register_business():
     """Registers non existing businesses"""
     new_business = request.get_json()
-    if  new_business=="":
-        return jsonify({'message':'error'})
     businessname = new_business['businessname']
     description=new_business['description']
     category =new_business['category']
     location =new_business['location']
 
     if businessname == "":
-        return jsonify({'message':'Business name required'})
+        return jsonify({'message':'Business name required'}), 401
     elif description == "":
-        return jsonify({'messaage':'Description is not required'})
+        return jsonify({'messaage':'Description is  required'}), 401
     elif category == "":
-        return jsonify({'message':'Category required'})
+        return jsonify({'message':'Category required'}), 401
     elif location == "":
-        return jsonify ({'message':'Location required'})
+        return jsonify ({'message':'Location required'}), 401
  
     for busines in business_instance.business:
         if busines['businessname'] ==businessname:
@@ -91,12 +91,7 @@ def register_business():
 @app.route('/api/v1/business/', methods= ['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
-    for business in business_instance.business:
-        if business['id'] == 0:    
-            return  jsonify({'message':'businesses not found'}),404
-
-        print(business_instance.business)
-        return jsonify(business_instance.business),200                
+    return jsonify(business_instance.business),200                
 
 
 @app.route('/api/v1/business/<int:business_id>', methods=['GET'])
@@ -130,11 +125,15 @@ def update_by_id(business_id):
     return jsonify({'business':busines[0]}),200
 
 
-@app.route('/api/v1/business/<int:business_id>/', methods=['DELETE'])
+@app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 def delete_business_by_id(business_id):
     """Endpoint for deleting requested business by id"""
     business=[business for business in business_instance.business if business['id']==business_id]
-    business_instance.business.remove(business[0])
+    del business_instance.business[0]['id']
+    del business_instance.business[0]['businessname']
+    del business_instance.business[0]['description']
+    del business_instance.business[0]['category']
+    del business_instance.business[0]['location']
     return jsonify({'message':'Business successfully deleted'}),202
 
 @app.route('/api/v1/business/category/<string:category>', methods=['GET'])
@@ -156,17 +155,21 @@ def get_business_by_category(category):
 #"""Endpoint for filter by location"""
 def get_business_by_location(location):
     #checks if location is not a string 
-    if location == type(int):
+    if location == "":
         return jsonify({'message':'Invalid location'})
-    business=[business for business in business_instance.business if business['location']==location]
-    found_location ={
-                    'id':business[0]['id'],
-                    'businessname':business[0]['businessname'],
-                    'description':business[0]['description'],
-                    'category':business[0]['category'],
-                    'location':business[0]['location']
-                    }
-    return jsonify(found_location),200
+    for location in business_instance.business:
+        if location not in business_instance.business:
+            return jsonify({'messaage':'location not found'}), 401
+
+    if location in business_instance.business:
+        found_location ={
+                        'id':location[0]['id'],
+                        'businessname':location[0]['businessname'],
+                        'description':location[0]['description'],
+                        'category':location[0]['category'],
+                        'location':location[0]['location']
+                        }
+    return jsonify(found_location), 200
 
 
 
