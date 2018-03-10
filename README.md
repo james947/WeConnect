@@ -51,7 +51,9 @@ Api endpoints
 3. Reviews
 - `POST /api/v1/businesses/<business_id>/reviews` Review a business
 - `GET /api/v1/businesses/<business_id>/reviews` Get business' reviews
-
+4. Filter
+- `GET /api/v1/businesses/<business_id>/category/<category>` Search by Category
+- `GET /api/v1/businesses/<business_id>/category/<Location>` Search by Location
 ```
 
 Running tests
