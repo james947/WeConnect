@@ -35,6 +35,24 @@ Locate the app.py
 
 
 ```
+Api endpoints
+---
+```
+1. Users 
+- `POST /api/v1/auth/register` Creates user account
+- `POST /api/v1/auth/login` Log in user
+- `POST /api/v1/auth/logout` Logout user
+- `PUT /api/v1/auth/reset-password` Resets user password
+2. Businesses
+- `POST /api/v1/businesses` Register new business
+- `GET /api/v1/businesses` List all available businesses
+- `PUT /api/v1/businesses/<business_id>` Update business 
+- `DELETE /api/v1/businesses/<business_id>` Remove business
+3. Reviews
+- `POST /api/v1/businesses/<business_id>/reviews` Review a business
+- `GET /api/v1/businesses/<business_id>/reviews` Get business' reviews
+
+```
 
 Running tests
 ---
