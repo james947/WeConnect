@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, make_response
 from source.models.business import Business
 from source.models.users import User
 from passlib.hash import sha256_crypt
@@ -21,40 +21,58 @@ def create_user():
     available_emails = [x.email for x in USERS]
    
     if email in available_emails:
-        return jsonify({'message':'Email is already registered'}) 
+        return make_response(jsonify({'message':'Email is already registered'}),400)
     elif username == "":
-        return jsonify({'message':'Username is required'})
-    
+        return make_response(jsonify({'message':'Username is required'}),401)
     elif email== "":
-        return jsonify({'message':'Email is required'})
+        return make_response(jsonify({'message':'Email is required'}))
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return jsonify({'message':'Email is invalid'})
 
     elif password == "":
-        return jsonify({'message':'Password is required'})
-
+        return make_response(jsonify({'message':'Password is required'})
+)
     password=sha256_crypt.encrypt(str(password))
     new_user=User(username, email, password)
     USERS.append(new_user)
-    return jsonify({'Message':'User successfully registered'}),201
+    return make_response(jsonify({'Message':'User successfully registered'}),201)
 
 @app.route('/api/v1/login', methods = ['POST'])
 def login():
     """if request is validated then user is logged in."""
     user_request=request.get_json()
-    user =[username for username in user_instance.users if username['email'] ==user_request['email'] and username['password']==user_request['password']]
-    print('hduhwd',user)
-    if user:
-        return jsonify({'message':'logged in successfully'}), 200
+    email = user_request['email']
+    password = user_request['password']
+    user_login = [user for user in USERS if user.email == email]
 
-    # if not user_request['username'] or if not user_request['password']: 
-    #     return jsonify({'message': 'Username / password ivalid, please try again!'})
-      
+    available_users=[user.email for user in USERS]
+    if email not in available_users:
+        return make_response(jsonify({'message':'Email not found'}))
+    elif email== "":
+        return make_response(jsonify({'message':'Email is required'}))
+    elif password == "":
+        return make_response(jsonify({'message':'Password is required'}))   
+    elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+        return make_response(jsonify({'message':'Email is invalid'}))
+    if user_login:
+        if password == user_login[0].password:
+            return make_response(jsonify({'message':'logged in successfully'}), 200)
+
 
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
-    return jsonify(user_instance.users)
+    #found_users=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
+    # user=[user.user for user in USERS}
+    # [{x.id : [x.name, x.category, x.location] for x in businesses}]
+    found_user = {
+                  'id': user.id,
+                  'email'  user.email,
+                   'password': user.password,
+                   'username':user.username] 
+                    }
+
+    return jsonify(found_user)
 
 
 @app.route('/api/v1/business', methods=['POST'])
