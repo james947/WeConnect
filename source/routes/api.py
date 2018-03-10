@@ -175,10 +175,10 @@ def get_business_by_location(location):
 
 
 
-# @app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
-# def add_review(review):
-#     new_review = request.get_json()
-#         reviewtitle = new_review['review']
+@app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
+def add_review(review):
+    new_review = request.get_json()
+    reviewtitle = new_review['review']
 
 
 
