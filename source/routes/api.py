@@ -42,15 +42,22 @@ def create_user():
 def login():
     """if request is validated then user is logged in."""
     user_request=request.get_json()
-    for user in user_instance.users:
-        if user['email'] ==user_request['email'] and user['password'] ==  user_request['password']:
-            return jsonify({'message':'logged in successfully'}), 200
-        elif user_request['email'] == "":
-            return jsonify({'message':'Email is required'}),401
-        elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",user_request['email']):
-            return jsonify({'message':'Email is invalid'}),400
-        elif user_request['password'] == "":
-            return jsonify({'message':'Password is required'}),401
+    email = user_request['email']
+    password = user_request['password']
+    user_login = [user for user in USERS if user.email == email]
+
+    available_users=[user.email for user in USERS]
+    if email not in available_users:
+        return make_response(jsonify({'message':'Email not found'}))
+    elif email== "":
+        return make_response(jsonify({'message':'Email is required'}))
+    elif password == "":
+        return make_response(jsonify({'message':'Password is required'}))   
+    elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+        return make_response(jsonify({'message':'Email is invalid'}))
+    if user_login:
+        if password == user_login[0].password:
+            return make_response(jsonify({'message':'logged in successfully'}), 200)
       
 
 @app.route('/api/auth/users', methods=['GET'])
