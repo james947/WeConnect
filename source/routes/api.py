@@ -8,9 +8,7 @@ import re
 app = Flask(__name__)
 
 
-business_instance=Business()
-user_instance = User()
-
+USERS = []
     
 @app.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
@@ -21,25 +19,24 @@ def create_user():
     email = user['email']
     username = user['username']
     password= user['password']
-
-    for user in user_instance.users:
-        if user['email'] == email:
-            return jsonify({'message':'Email is already registered'})
-    
-    if username == "":
-        return jsonify({'message':'Username is required'})
-    
+    available_emails = [x.email for x in USERS]
+   
+    if email in available_emails:
+        return make_response(jsonify({'message':'Email is already registered'}),400)
+    elif username == "":
+        return make_response(jsonify({'message':'Username is required'}),401)
     elif email== "":
-        return jsonify({'message':'Email is required'})
+        return make_response(jsonify({'message':'Email is required'}))
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return jsonify({'message':'Email is invalid'})
 
     elif password == "":
-        return jsonify({'message':'Password is required'})
-
+        return make_response(jsonify({'message':'Password is required'})
+)
     password=sha256_crypt.encrypt(str(password))
-    user_instance.create_user(id,username, email, password)
-    return jsonify({'Message':'User successfully registered'}),201
+    new_user=User(username, email, password)
+    USERS.append(new_user)
+    return make_response(jsonify({'Message':'User successfully registered'}),201)
 
 @app.route('/api/v1/login', methods = ['POST'])
 def login():
