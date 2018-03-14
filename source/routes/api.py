@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, request, make_response
+from flask import Flask, jsonify, abort, request, make_response,json
 from source.models.business import Business
 from source.models.users import User
 from passlib.hash import sha256_crypt
@@ -7,6 +7,11 @@ import re
 
 app = Flask(__name__)
 
+#returns onbject as a dict making json serializable
+def json_default_format(o):
+    return o.__dict__
+
+BUSINESS=[]
 
 USERS = []
     
@@ -31,8 +36,7 @@ def create_user():
         return jsonify({'message':'Email is invalid'})
 
     elif password == "":
-        return make_response(jsonify({'message':'Password is required'})
-)
+        return make_response(jsonify({'message':'Password is required'}))
     password=sha256_crypt.encrypt(str(password))
     new_user=User(username, email, password)
     USERS.append(new_user)
@@ -63,9 +67,10 @@ def login():
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
-    return make_response(jsonify(user_instance.users),200)
-
-
+    user = USERS
+    #found_user=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
+    result =json.dumps(user, indent=4, separators=(',', ': '), default=json_default_format)
+    return jsonify({'result':result})
 
 
 @app.route('/api/v1/business', methods=['POST'])
@@ -76,8 +81,11 @@ def register_business():
     description=new_business['description']
     category =new_business['category']
     location =new_business['location']
+    available_business= [biz.businessname for biz in BUSINESS]
 
-    if businessname == "":
+    if  businessname in  available_business:
+        return jsonify({'message':'Business already exists'}),409
+    elif businessname == "":
         return jsonify({'message':'Business name required'}), 401
     elif description == "":
         return jsonify({'messaage':'Description is  required'}), 401
@@ -86,27 +94,26 @@ def register_business():
     elif location == "":
         return jsonify ({'message':'Location required'}), 401
  
-    for busines in business_instance.business:
-        if busines['businessname'] ==businessname:
-            return jsonify({'message':'Business already exists'}),409
 
-    business_instance.create_business(id,businessname,description,location,category)
-    #print(business_instance.create_business(id,businessname,description,location,category))
+    new_business=Business(businessname,description,location,category)
+    BUSINESS.append(new_business)
     return jsonify({'Message':'Business successfully registered'}),201
 
 @app.route('/api/v1/business/', methods= ['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
-    return jsonify(business_instance.business),200                
+    business = BUSINESS
+    result =json.dumps(business, indent=4, separators=(',', ' : '), default=json_default_format)
+    return jsonify(result),200                
 
 
 @app.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
     """Gets a particular bsuiness by id"""
-    busines=[business for business in business_instance.business if business['id']==business_id]
-    if len(busines) < 0: 
+    busines=[business for business in BUSINESS if business['id']==business_id]
+    if busines[0]['id'] < 0 or busines[0]['id'] == "": 
         return  jsonify({'message':'business not found'}),404
-    for business in business_instance.business:
+    for business in BUSINESS:
         found_business={
                         'id':business['id'],
                         'businessname':business['businessname'],
@@ -115,7 +122,7 @@ def get_by_id(business_id):
                         'location':business['location']
                     }
 
-    return jsonify(found_business),200
+        return make_response(jsonify(found_business),200)
 
 @app.route('/api/v1/business/<int:business_id>', methods=['PUT'])
 def update_by_id(business_id):
