@@ -103,50 +103,57 @@ def register_business():
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
     business = BUSINESS
-    result =json.dumps(business, indent=4, separators=(',', ' : '), default=json_default_format)
-    return jsonify(result),200                
+    found_business=[{business.id : [{'businessname':business.businessname,'description':business.description,'category':business.category,'location':business.location}] for business in BUSINESS}]
+    return make_response(jsonify(found_business),200)                
 
 
 @app.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
     """Gets a particular bsuiness by id"""
-    busines=[business for business in BUSINESS if business['id']==business_id]
-    if busines[0]['id'] < 0 or busines[0]['id'] == "": 
-        return  jsonify({'message':'business not found'}),404
-    for business in BUSINESS:
-        found_business={
-                        'id':business['id'],
-                        'businessname':business['businessname'],
-                        'description':business['description'],
-                        'category':business['category'],
-                        'location':business['location']
-                    }
-
-        return make_response(jsonify(found_business),200)
+    business=[business for business in BUSINESS if business.id==business_id]
+    if business:
+        business = business[0]
+    # elif business_id < 0: 
+    #     return  make_response(jsonify({'message':'business not found'}),404)
+    # elif business_id != business.id:
+    #     return  make_response(jsonify({'message':'business not found'}),404)
+    found_business={
+                    'id':business.id,
+                    'businessname':business.businessname,
+                    'description':business.description,
+                    'category':business.category,
+                    'location':business.location
+                   }
+    return make_response(jsonify(found_business),200)
 
 @app.route('/api/v1/business/<int:business_id>', methods=['PUT'])
 def update_by_id(business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
-    busines=[business for business in business_instance.business if business['id']==business_id]
+    busines=[business for business in BUSINESS if business.id==business_id]
+    if business:
+        business = business[0]
 
-    busines[0]['businessname'] = request.json['businessname']
-    busines[0]['description'] = request.json['description']
-    busines[0]['category'] = request.json['category']
-    busines[0]['location'] = request.json['location']
+    busines['businessname'] = request.json['businessname']
+    busines['description'] = request.json['description']
+    busines['ctegory'] = request.json['category']
+    busines['location'] = request.json['location']
      
-    return jsonify({'business':busines[0]}),200
+    return make_response(jsonify({'business':busines[0]}),200)
 
 
 @app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 def delete_business_by_id(business_id):
     """Endpoint for deleting requested business by id"""
-    business=[business for business in business_instance.business if business['id']==business_id]
-    del business_instance.business[0]['id']
-    del business_instance.business[0]['businessname']
-    del business_instance.business[0]['description']
-    del business_instance.business[0]['category']
-    del business_instance.business[0]['location']
+    business=[business for business in BUSINESS if business.id==business_id]
+    if business:
+        business = business[0]
+    # del business['id']
+    # del business['businessname']
+    # del business['description']
+    # del business['category']
+    # del business['location']
+    BUSINESS.remove(business)
     return jsonify({'message':'Business successfully deleted'}),202
 
 @app.route('/api/v1/business/category/<string:category>', methods=['GET'])
