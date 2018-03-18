@@ -1,19 +1,22 @@
 from flask import Flask, jsonify, abort, request, make_response,json
 from source.models.business import Business
 from source.models.users import User
+from source.models.reviews import Reviews
 from passlib.hash import sha256_crypt
 import datetime
 import re
 
 app = Flask(__name__)
+"""secret key for encoding ofthe token"""
+app.config['SECRET_KEY'] ="b'd45871881ac4561fb7bf9226e27137708e28c505fc21efb9'"
 
-#returns onbject as a dict making json serializable
+"""returns onbject as a dict making json serializable"""
 def json_default_format(o):
     return o.__dict__
 
 BUSINESS=[]
-
 USERS = []
+REVIEWS = []
     
 @app.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
@@ -113,10 +116,10 @@ def get_by_id(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
-    # elif business_id < 0: 
-    #     return  make_response(jsonify({'message':'business not found'}),404)
-    # elif business_id != business.id:
-    #     return  make_response(jsonify({'message':'business not found'}),404)
+    elif business.id < 0: 
+        return  make_response(jsonify({'message':'business not found'}),404)
+    elif business.id != business.id:
+        return  make_response(jsonify({'message':'business not found'}),404)
     found_business={
                     'id':business.id,
                     'businessname':business.businessname,
@@ -130,16 +133,18 @@ def get_by_id(business_id):
 def update_by_id(business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
-    busines=[business for business in BUSINESS if business.id==business_id]
+    business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
 
-    busines['businessname'] = request.json['businessname']
-    busines['description'] = request.json['description']
-    busines['ctegory'] = request.json['category']
-    busines['location'] = request.json['location']
-     
-    return make_response(jsonify({'business':busines[0]}),200)
+    business.businessname= request.json['businessname']
+    business.description= request.json['description']
+    business.category= request.json['category']
+    business.location= request.json['location']
+    business = BUSINESS
+    updated_business=[{business.id : [{'businessname':business.businessname,'description':business.description,'category':business.category,
+                                        'location':business.location}] for business in BUSINESS}]
+    return make_response(jsonify(updated_business),200)
 
 
 @app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
@@ -148,11 +153,6 @@ def delete_business_by_id(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
-    # del business['id']
-    # del business['businessname']
-    # del business['description']
-    # del business['category']
-    # del business['location']
     BUSINESS.remove(business)
     return jsonify({'message':'Business successfully deleted'}),202
 
@@ -160,7 +160,7 @@ def delete_business_by_id(business_id):
 def get_business_by_category(category):
     """Endpoint for filter by category"""
     #cheks if category is not a string
-    business=[business for business in business_instance.business if business['category']==category]
+    business=[business for business in BUSINESS if business['category']==category]
     found_category ={
                     'id':business[0]['id'],
                     'businessname':business[0]['businessname'],
@@ -194,11 +194,35 @@ def get_business_by_location(location):
 
 
 @app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
-def add_review(review):
+def add_review(business_id):
     new_review = request.get_json()
-    reviewtitle = new_review['review']
+    title = new_review['title'],
+    description = new_review['description']
+    business_id = new_review['businessid']
+
+    if title == "":
+        return make_response(jsonify({'message':'Title name required'}), 401)
+    elif description == "":
+        return make_response(jsonify({'messaage':'Description is  required'}), 401)
+
+    new_review =Reviews(title,description,business_id)
+    REVIEWS.append(new_review)
+
+    return make_response(jsonify({'message':'Review Added Successfully'}),201)
 
 
 
-
+@app.route('/api/v1/business/<int:business_id>/review/<int:review_id>', methods=['GET'])
+def get_review_by_id(review_id):
+    review=[review for review in REVIEWS if review.id==review_id]
+    if review:
+        review = review[0]
+    found_business={
+                    'id':review.id,
+                    'businessname':review.businessname,
+                    'description':review.description,
+                    'category':review.category,
+                    'location':review.location
+                   }
+    return make_response(jsonify(found_business),200)
     
