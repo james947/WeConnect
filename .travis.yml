@@ -7,7 +7,6 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 script: 
-  # - nosetests --with-coverage --cover-package=source
   - coverage report
 
 after_success: 
