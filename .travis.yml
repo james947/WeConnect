@@ -10,7 +10,7 @@ script:
   - coverage report
 
 after_success:
-  - nosetests --with-coverage 
+  - nosetests --with-coverage --cover-package=source
   - coveralls
 
 notifications:
