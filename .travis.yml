@@ -9,7 +9,8 @@ install:
 script: 
   - coverage report
 
-after_success: 
+after_success:
+  - nosetests --with-coverage 
   - coveralls
 
 notifications:
