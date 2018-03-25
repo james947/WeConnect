@@ -10,7 +10,7 @@ script:
   - coverage report
 
 after_success:
-  - nosetests --with-coverage --cover-package=source
+  - nosetests --with-coverage --cover-package=source/routes
   - coveralls
 
 notifications:
