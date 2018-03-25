@@ -216,6 +216,8 @@ def get_all_reviews(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
+    elif business not in BUSINESS:
+            return jsonify({'message':'Reviews not found'})
     business_id = business.id
     review  = REVIEWS
     found_business=[{review.id:[{'title':review.title,'description':review.description}]for review in REVIEWS}]
