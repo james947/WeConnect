@@ -68,17 +68,18 @@ def login():
         user_login = user_login[0]
         if password == user_login.password:
             session['user'] == email
-            print("hellow world")
             return jsonify({'message':'logged in successfully'}), 200
 
 
 @app.route('/api/auth/logout')
 def logout():
+    """clears sessions"""
     session.pop('user', None)
     return jsonify({'message':'Logged out successfuly'})
 
 @app.route('/api/v1/auth/reset-password', methods = ['PUT'])
 def reset_password():
+    """Resets password"""
     reset = request.get_json()
     email= reset['email']
     new_password = reset['password']
@@ -137,7 +138,8 @@ def register_business():
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
     business = BUSINESS
-    found_business=[{business.id : [{'businessname':business.businessname,'description':business.description,'category':business.category,'location':business.location}] for business in BUSINESS}]
+    found_business=[{business.id : [{'businessname':business.businessname,'description':business.description,
+    'category':business.category,'location':business.location}] for business in BUSINESS}]
     return make_response(jsonify(found_business),200)                
 
 
@@ -189,9 +191,13 @@ def delete_business_by_id(business_id):
 @app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
 def add_review(business_id):
     new_review = request.get_json()
+    business=[business for business in BUSINESS if business.id==business_id]
+    if business:
+        business = business[0]
+
     title = new_review['title'],
     description = new_review['description']
-    business_id = new_review['businessid']
+    business_id = business.id
 
     if title == "":
         return make_response(jsonify({'message':'Title name required'}), 401)
@@ -205,18 +211,14 @@ def add_review(business_id):
 
 
 
-@app.route('/api/v1/business/<int:business_id>/review/<int:review_id>', methods=['GET'])
-def get_review_by_id(review_id):
-    review=[review for review in REVIEWS if review.id==review_id]
-    if review:
-        review = review[0]
-    found_business={
-                    'id':review.id,
-                    'businessname':review.businessname,
-                    'description':review.description,
-                    'category':review.category,
-                    'location':review.location
-                   }
+@app.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
+def get_all_reviews(business_id):
+    business=[business for business in BUSINESS if business.id==business_id]
+    if business:
+        business = business[0]
+    business_id = business.id
+    review  = REVIEWS
+    found_business=[{review.id:[{'title':review.title,'description':review.description}]for review in REVIEWS}]
     return make_response(jsonify(found_business),200)
     
  
