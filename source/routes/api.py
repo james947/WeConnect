@@ -167,6 +167,8 @@ def update_by_id(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
+        if business in BUSINESS:
+            return jsonify({'message':'Business already exists'}),409
 
     business.businessname= request.json['businessname']
     business.description= request.json['description']
