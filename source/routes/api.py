@@ -35,10 +35,10 @@ def create_user():
     elif email== "":
         return make_response(jsonify({'message':'Email is required'}))
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return jsonify({'message':'Email is invalid'})
+        return make_response(jsonify({'message':'Email is invalid'}))
 
     elif password == "":
-        return make_response(jsonify({'message':'Password is required'}))
+        return make_response(jsonify({'message':'Password is required'}),401)
         
     password=sha256_crypt.encrypt(str(password))
     new_user=User(username, email, password)
@@ -57,26 +57,26 @@ def login():
     if email not in available_users:
         return make_response(jsonify({'message':'Email not found'}))
     elif email== "":
-        return make_response(jsonify({'message':'Email is required'}))
+        return make_response(jsonify({'message':'Email is required'}),401)
     elif password == "":
-        return make_response(jsonify({'message':'Password is required'}))   
+        return make_response(jsonify({'message':'Password is required'}),401)   
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return make_response(jsonify({'message':'Email is invalid'}))
+        return make_response(jsonify({'message':'Email is invalid'}),409)
         
     user_login = [user for user in USERS if user.email == email]
     if user_login:
         user_login = user_login[0]
         if password == user_login.password:
             session['user'] == email
-            return jsonify({'message':'logged in successfully'}), 200
+            return make_response(jsonify({'message':'logged in successfully'}), 200)
 
 
 @app.route('/api/auth/logout')
 def logout():
     """clears sessions"""
     session.pop('user', None)
-    return jsonify({'message':'Logged out successfuly'})
-
+    return make_response(jsonify({'message':'Logged out successfuly'}), 200
+)
 @app.route('/api/v1/auth/reset-password', methods = ['PUT'])
 def reset_password():
     """Resets password"""
@@ -88,17 +88,16 @@ def reset_password():
     if email not in available_users:
         return make_response(jsonify({'message':'Email not found'}))
     elif email== "":
-        return make_response(jsonify({'message':'Email is required'}))
+        return make_response(jsonify({'message':'Email is required'}),401)
     elif new_password == "":
-        return make_response(jsonify({'message':'Password is required'}))   
+        return make_response(jsonify({'message':'Password is required'}),401)   
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return make_response(jsonify({'message':'Email is invalid'}))
 
     get_user = [user for user in USERS if user.email == email]
     found_user = get_user[0]
     found_user.password = new_password
-    return jsonify({'message':'Password reset success'})
-
+    return make_response(jsonify({'message':'Password reset success'}),200)
 
 @app.route('/api/auth/users', methods=['GET'])
 def get_all_users():
@@ -106,7 +105,7 @@ def get_all_users():
     user = USERS
     #found_user=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
     result =json.dumps(user, indent=4, separators=(',', ': '), default=json_default_format)
-    return jsonify({'result':result})
+    return make_response(jsonify({'result':result}),200)
 
 
 @app.route('/api/v1/business', methods=['POST'])
@@ -120,15 +119,15 @@ def register_business():
     available_business= [biz.businessname for biz in BUSINESS]
 
     if  businessname in  available_business:
-        return jsonify({'message':'Business already exists'}),409
+        return make_response(jsonify({'message':'Business already exists'}),409)
     elif businessname == "":
         return jsonify({'message':'Business name required'}), 401
     elif description == "":
-        return jsonify({'messaage':'Description is  required'}), 401
+        return make_response(jsonify({'messaage':'Description is  required'}), 401)
     elif category == "":
-        return jsonify({'message':'Category required'}), 401
+        return make_response(jsonify({'message':'Category required'}), 401)
     elif location == "":
-        return jsonify ({'message':'Location required'}), 401
+        return make_response(jsonify ({'message':'Location required'}), 401)
  
     new_business=Business(businessname,description,location,category)
     BUSINESS.append(new_business)
@@ -168,7 +167,7 @@ def update_by_id(business_id):
     if business:
         business = business[0]
         if business in BUSINESS:
-            return jsonify({'message':'Business already exists'}),409
+            return make_response(jsonify({'message':'Business already exists'}),409)
 
     business.businessname= request.json['businessname']
     business.description= request.json['description']
@@ -219,7 +218,7 @@ def get_all_reviews(business_id):
     if business:
         business = business[0]
     elif business not in BUSINESS:
-            return jsonify({'message':'Reviews not found'})
+            return make_response(jsonify({'message':'Reviews not found'}))
     business_id = business.id
     review  = REVIEWS
     found_business=[{review.id:[{'title':review.title,'description':review.description}]for review in REVIEWS}]
