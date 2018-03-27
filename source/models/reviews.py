@@ -1,7 +1,9 @@
 class Reviews():
     """increments review by one"""
-    count = 1
-    def __init__(self,review):
-        self.review = review
-        self.id = Reviews.count
+    count = 0
+    def __init__(self,title,description,businessid):
+        self.title = title
+        self.description= description
+        self.businessid= businessid
+        self.id= Reviews.count
         Reviews.count+=1
