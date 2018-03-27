@@ -75,8 +75,7 @@ def login():
 def logout():
     """clears sessions"""
     session.pop('user', None)
-    return make_response(jsonify({'message':'Logged out successfuly'}), 200
-)
+    return make_response(jsonify({'message':'Logged out successfuly'}), 200)
 @app.route('/api/v1/auth/reset-password', methods = ['PUT'])
 def reset_password():
     """Resets password"""

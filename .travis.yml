@@ -8,9 +8,10 @@ install:
   - pip install coveralls
 script: 
   - coverage report
+  - nosetests --with-coverage --cover-package=source
 
 after_success:
-  - nosetests --with-coverage --cover-package=source
+ 
   - coveralls
 
 notifications:
