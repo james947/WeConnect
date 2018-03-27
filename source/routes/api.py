@@ -200,7 +200,7 @@ def add_review(business_id):
     business_id = business.id
 
     if title == "":
-        return make_response(jsonify({'message':'Title name required'}), 401)
+        return make_response(jsonify({'message':'Title is required'}), 401)
     elif description == "":
         return make_response(jsonify({'messaage':'Description is  required'}), 401)
 
