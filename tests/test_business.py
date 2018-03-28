@@ -1,9 +1,10 @@
-from source.routes.api import app
-from unittest import TestCase
 import json
+import unittest
 
+from source.models.users import User
+from source.routes.api import app
 
-class TestIntegrations(TestCase):
+class TestIntegrations(unittest.TestCase):
     """set app config"""
     def setUp(self):
         app.testing=True
@@ -133,3 +134,7 @@ class TestIntegrations(TestCase):
     def teardown(self):
         del self.business
         pass
+
+
+if __name__ == '__main__':
+     app.run(debug=True)
