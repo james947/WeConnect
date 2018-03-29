@@ -1,22 +1,30 @@
 from flask import Flask, jsonify, abort, request, make_response,json, session
-from source.models.business import Business
-from source.models.users import User
-from source.models.reviews import Reviews
+from source.models.models import Users, Business, Reviews
 from passlib.hash import sha256_crypt
-import datetime
 import re
 
-app = Flask(__name__)
-"""secret key for encoding ofthe token"""
-app.config['SECRET_KEY'] ="b'd45871881ac4561fb7bf9226e27137708e28c505fc21efb9'"
-"""returns onbject as a dict making json serializable"""
-def json_default_format(o):
-    return o.__dict__
 
-BUSINESS=[]
-USERS = []
-REVIEWS = []
-    
+from flask_api import FlaskAPI
+from flask_sqlalchemy import SQLAlchemy
+
+# local import
+from config import app_config
+
+# initialize sql-alchemy
+db = SQLAlchemy()
+
+def create_app(config_name):
+    app = FlaskAPI(__name__, instance_relative_config=True)
+    app.config.from_object(app_config[config_name])
+    app.config.from_pyfile('config.py')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+
+    return app
+
+
+
+
 @app.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
     """
