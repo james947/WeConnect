@@ -1,4 +1,5 @@
 import os
+
 class BaseConfig(object):
     """Base configuration class."""
     DEBUG = False
