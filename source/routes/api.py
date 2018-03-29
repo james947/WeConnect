@@ -1,14 +1,13 @@
-from flask import Flask, jsonify, abort, request, make_response,json, session
-from source.models.models import Users, Business, Reviews
+from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
 from passlib.hash import sha256_crypt
 import re
 
-
+conn = Blueprint('v1', __name__)
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
 # local import
-from config import app_config
+from instance.config import app_config
 
 # initialize sql-alchemy
 db = SQLAlchemy()
@@ -16,16 +15,18 @@ db = SQLAlchemy()
 def create_app(config_name):
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
+    app.register_blueprint(conn)
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
     return app
 
+from source.models.models import Users, Business, Reviews
 
 
 
-@app.route('/api/auth/v1/register', methods=['POST'])
+@conn.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
     """
     creates a new user in the list of users
@@ -53,7 +54,7 @@ def create_user():
     USERS.append(new_user)
     return make_response(jsonify({'Message':'User successfully registered'}),201)
 
-@app.route('/api/v1/login', methods = ['POST'])
+@conn.route('/api/v1/login', methods = ['POST'])
 def login():
     """if request is validated then user is logged in."""
     user_request=request.get_json()
@@ -79,12 +80,12 @@ def login():
             return make_response(jsonify({'message':'logged in successfully'}), 200)
 
 
-@app.route('/api/auth/logout')
+@conn.route('/api/auth/logout')
 def logout():
     """clears sessions"""
     session.pop('user', None)
     return make_response(jsonify({'message':'Logged out successfuly'}), 200)
-@app.route('/api/v1/auth/reset-password', methods = ['PUT'])
+@conn.route('/api/v1/auth/reset-password', methods = ['PUT'])
 def reset_password():
     """Resets password"""
     reset = request.get_json()
@@ -106,7 +107,7 @@ def reset_password():
     found_user.password = new_password
     return make_response(jsonify({'message':'Password reset success'}),200)
 
-@app.route('/api/auth/users', methods=['GET'])
+@conn.route('/api/auth/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
     user = USERS
@@ -115,7 +116,7 @@ def get_all_users():
     return make_response(jsonify({'result':result}),200)
 
 
-@app.route('/api/v1/business', methods=['POST'])
+@conn.route('/api/v1/business', methods=['POST'])
 def register_business():
     """Registers non existing businesses"""
     new_business = request.get_json()
@@ -140,7 +141,7 @@ def register_business():
     BUSINESS.append(new_business)
     return jsonify({'Message':'Business successfully registered'}),201
 
-@app.route('/api/v1/business/', methods= ['GET'])
+@conn.route('/api/v1/business/', methods= ['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
     business = BUSINESS
@@ -149,7 +150,7 @@ def get_all_businesses():
     return make_response(jsonify(found_business),200)                
 
 
-@app.route('/api/v1/business/<int:business_id>', methods=['GET'])
+@conn.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
     """Gets a particular bsuiness by id"""
     business=[business for business in BUSINESS if business.id==business_id]
@@ -166,7 +167,7 @@ def get_by_id(business_id):
                    }
     return make_response(jsonify(found_business),200)
 
-@app.route('/api/v1/business/<int:business_id>', methods=['PUT'])
+@conn.route('/api/v1/business/<int:business_id>', methods=['PUT'])
 def update_by_id(business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
@@ -186,7 +187,7 @@ def update_by_id(business_id):
     return make_response(jsonify(updated_business),200)
 
 
-@app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
+@conn.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 def delete_business_by_id(business_id):
     """Endpoint for deleting requested business by id"""
     business=[business for business in BUSINESS if business.id==business_id]
@@ -196,7 +197,7 @@ def delete_business_by_id(business_id):
     return jsonify({'message':'Business successfully deleted'}),202
 
 
-@app.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
+@conn.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
 def add_review(business_id):
     new_review = request.get_json()
     business=[business for business in BUSINESS if business.id==business_id]
@@ -219,7 +220,7 @@ def add_review(business_id):
 
 
 
-@app.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
+@conn.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
 def get_all_reviews(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
