@@ -1,4 +1,4 @@
-from source.routes.api import db
+from routes.api import db
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -13,7 +13,7 @@ class Users(db.Model):
         onupdate=db.func.current_timestamp())
 
 
-class Business(db.model):
+class Business(db.Model):
     __tablename__ = 'business'
     id = db.Column(db.Integer, primary_key=True)
     businessname = db.Column(db.String(50), unique=True)
@@ -27,7 +27,7 @@ class Business(db.model):
 
 
 
-class Reviews(db.model):
+class Reviews(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer, primary_key=True)
     title= db.Column(db.String(50), unique=True, nullable=False)
