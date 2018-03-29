@@ -1,4 +1,4 @@
-from routes.api import db
+from source.routes.api import db
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -8,10 +8,13 @@ class Users(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(
-        db.DateTime, default=db.func.current_timestamp(),
+    date_modified = db.Column(db.DateTime, 
+        default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
 
+    businesses = db.relationship('Business',backref='owner', lazy='dynamic')
+
+    reviews = db.relationship('Reviews', backref='reviewer', lazy='dynamic')
 
 class Business(db.Model):
     __tablename__ = 'business'
@@ -20,10 +23,13 @@ class Business(db.Model):
     description = db.Column(db.String(50), unique=True, nullable=False)
     category = db.Column(db.String(50), unique=True, nullable=False)
     location = db.Column(db.String(50), unique=True, nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(
-        db.DateTime, default=db.func.current_timestamp(),
+    date_modified = db.Column(db.DateTime,  
+        default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
+
+    reviews = db.relationship('Reviews', backref='business', lazy='dynamic')
 
 
 
@@ -33,6 +39,8 @@ class Reviews(db.Model):
     title= db.Column(db.String(50), unique=True, nullable=False)
     review= db.Column(db.String(50), unique=True, nullable=False)
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(
-        db.DateTime, default=db.func.current_timestamp(),
-        onupdate=db.func.current_timestamp())
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    business_id = db.column(db.integer, db.ForeignKey('business.id'))
+    date_modified = db.Column(db.DateTime,
+        default=db.func.current_timestamp(),
+        onupdate= db.func.current_timestamp())
