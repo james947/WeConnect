@@ -27,8 +27,8 @@ class ProductionConfig(BaseConfig):
 
 
 app_config = {
-            'development': DevelopmentConfig,
-            'testing': TestingConfig,
-            'staging': StagingConfig,
-            'production': ProductionConfig,
+                'development': DevelopmentConfig,
+                'testing': TestingConfig,
+                'staging': StagingConfig,
+                'production': ProductionConfig,
             }
