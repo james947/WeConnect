@@ -5,10 +5,12 @@ python :
   - "3.6"
 install:
   - pip install -r requirements.txt
+  - pip install coveralls
 script: 
-  - nosetests --with-coverage --cover-package=source
+  - coverage report
 
-after_success: 
+after_success:
+  - nosetests --with-coverage --cover-package=source
   - coveralls
 
 notifications:
