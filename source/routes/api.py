@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
 from passlib.hash import sha256_crypt
 import re
+import uuid
+from werkzeug.security import generate_password_hash, check_password_hash
 
-conn = Blueprint('v1', __name__)
+conn = Blueprint('conn', __name__)
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
@@ -35,24 +37,28 @@ def create_user():
     email = user['email']
     username = user['username']
     password= user['password']
-    available_emails = [x.email for x in USERS]
-   
-    if email in available_emails:
-        return make_response(jsonify({'message':'Email is already registered'}),400)
-    elif username == "":
+    
+    if username == "":
         return make_response(jsonify({'message':'Username is required'}),401)
     elif email== "":
         return make_response(jsonify({'message':'Email is required'}))
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return make_response(jsonify({'message':'Email is invalid'}))
-
     elif password == "":
         return make_response(jsonify({'message':'Password is required'}),401)
+
+    available_emails =  Users.query.filter_by(email=email).first()
+    if available_emails == None:
+        """checks if email duplicate email"""
+        password=generate_password_hash(password, method='sha256')
+        new_user=Users(public_id=str(uuid.uuid4()), username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return make_response(jsonify({'Message':'User successfully registered'}),201)
+    elif email in available_emails.email:
+        return make_response(jsonify({'message':'Email is already registered'}),400) 
+
         
-    password=sha256_crypt.encrypt(str(password))
-    new_user=User(username, email, password)
-    USERS.append(new_user)
-    return make_response(jsonify({'Message':'User successfully registered'}),201)
 
 @conn.route('/api/v1/login', methods = ['POST'])
 def login():
