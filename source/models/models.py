@@ -40,7 +40,23 @@ class Reviews(db.Model):
     review= db.Column(db.String(50), unique=True, nullable=False)
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    business_id = db.column(db.integer, db.ForeignKey('business.id'))
+    business_id = db.column(db.Integer, db.ForeignKey('business.id'))
     date_modified = db.Column(db.DateTime,
         default=db.func.current_timestamp(),
         onupdate= db.func.current_timestamp())
+
+    def __init__(self, username):
+        """initialize with usernamename."""
+        self.username = username
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        return Business.query.all()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
