@@ -12,6 +12,32 @@ import os
 from source.models.models import Users
 
 
+def token_required(f):
+    """Decorator to secure all endpoints"""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+  
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+
+        if not token:
+            return jsonify({'message': 'Token is required'}), 401
+
+        try:
+            data = jwt.decode(token, os.getenv('SECRET'))
+            current_user = Users.query.filter_by(public_id=data['public_id']).first()
+        except:
+            return jsonify({'m essage': 'Token is invalid!'}), 401
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
+
+
+
+
 @auth.route('/api/auth/v1/register', methods=['POST'])
 def create_user():
     """
@@ -74,6 +100,7 @@ def logout():
     return make_response(jsonify({'message':'Logged out successfuly'}), 200)
     
 @auth.route('/api/v1/auth/reset-password', methods = ['PUT'])
+@token_required
 def reset_password():
     """Resets password"""
     reset = request.get_json()
@@ -96,10 +123,18 @@ def reset_password():
     return make_response(jsonify({'message':'Password reset success'}),200)
 
 @auth.route('/api/auth/users', methods=['GET'])
-def get_all_users():
+@token_required
+def get_all_users(current_user):
     """returns all the registered users"""
-    user = USERS
-    #found_user=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
-    result =json.dumps(user, indent=4, separators=(',', ': '), default=json_default_format)
-    return make_response(jsonify({'result':result}),200)
+    users = Users.query.all()
+    output = []
+    for user in users:
+        user_data = {}
+        user_data['public_id'] = user.public_id
+        user_data['username'] = user.username
+        user_data['email'] = user.email
+        user_data['password'] = user.password
+        output.append(user_data)
+
+    return make_response(jsonify({'users':output}),200)
 
