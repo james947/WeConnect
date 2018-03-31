@@ -17,6 +17,7 @@ class Users(db.Model):
 
     reviews = db.relationship('Reviews', backref='reviewer', lazy='dynamic')
 
+
 class Business(db.Model):
     __tablename__ = 'business'
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +34,6 @@ class Business(db.Model):
     reviews = db.relationship('Reviews', backref='business', lazy='dynamic')
 
 
-
 class Reviews(db.Model):
     __tablename__ = 'reviews'
     id = db.Column(db.Integer, primary_key=True)
@@ -46,18 +46,5 @@ class Reviews(db.Model):
         default=db.func.current_timestamp(),
         onupdate= db.func.current_timestamp())
 
-    def __init__(self, username):
-        """initialize with usernamename."""
-        self.username = username
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
 
-    @staticmethod
-    def get_all():
-        return Business.query.all()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
