@@ -1,128 +1,40 @@
 from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
 from passlib.hash import sha256_crypt
+from functools import wraps
 import re
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+import datetime
+import os
 
-conn = Blueprint('conn', __name__)
+biz = Blueprint('biz', __name__)
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
 # local import
 from instance.config import app_config
-
+ 
 # initialize sql-alchemy
 db = SQLAlchemy()
 
+"""wraps the creation of a new Flask object"""
 def create_app(config_name):
     app = FlaskAPI(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
-    app.register_blueprint(conn)
+    app.register_blueprint(biz)
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-
+    from .auth import auth
+    app.register_blueprint(auth)
     return app
 
+"""import model classes"""
 from source.models.models import Users, Business, Reviews
 
 
-
-@conn.route('/api/auth/v1/register', methods=['POST'])
-def create_user():
-    """
-    creates a new user in the list of users
-    """
-    user=request.get_json()
-    email = user['email']
-    username = user['username']
-    password= user['password']
-    
-    if username == "":
-        return make_response(jsonify({'message':'Username is required'}),401)
-    elif email== "":
-        return make_response(jsonify({'message':'Email is required'}))
-    elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return make_response(jsonify({'message':'Email is invalid'}))
-    elif password == "":
-        return make_response(jsonify({'message':'Password is required'}),401)
-
-    available_emails =  Users.query.filter_by(email=email).first()
-    if available_emails == None:
-        """checks if email duplicate email"""
-        password=generate_password_hash(password, method='sha256')
-        new_user=Users(public_id=str(uuid.uuid4()), username=username, email=email, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-        return make_response(jsonify({'Message':'User successfully registered'}),201)
-    elif email in available_emails.email:
-        return make_response(jsonify({'message':'Email is already registered'}),400) 
-
-        
-
-@conn.route('/api/v1/login', methods = ['POST'])
-def login():
-    """if request is validated then user is logged in."""
-    user_request=request.get_json()
-    session.pop('user', None)
-    email = user_request['email']
-    password = user_request['password']
-
-    available_users=[user.email for user in USERS]
-    if email not in available_users:
-        return make_response(jsonify({'message':'Email not found'}))
-    elif email== "":
-        return make_response(jsonify({'message':'Email is required'}),401)
-    elif password == "":
-        return make_response(jsonify({'message':'Password is required'}),401)   
-    elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return make_response(jsonify({'message':'Email is invalid'}),409)
-        
-    user_login = [user for user in USERS if user.email == email]
-    if user_login:
-        user_login = user_login[0]
-        if password == user_login.password:
-            session['user'] == email
-            return make_response(jsonify({'message':'logged in successfully'}), 200)
-
-
-@conn.route('/api/auth/logout')
-def logout():
-    """clears sessions"""
-    session.pop('user', None)
-    return make_response(jsonify({'message':'Logged out successfuly'}), 200)
-@conn.route('/api/v1/auth/reset-password', methods = ['PUT'])
-def reset_password():
-    """Resets password"""
-    reset = request.get_json()
-    email= reset['email']
-    new_password = reset['password']
-
-    available_users=[user.email for user in USERS]
-    if email not in available_users:
-        return make_response(jsonify({'message':'Email not found'}))
-    elif email== "":
-        return make_response(jsonify({'message':'Email is required'}),401)
-    elif new_password == "":
-        return make_response(jsonify({'message':'Password is required'}),401)   
-    elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return make_response(jsonify({'message':'Email is invalid'}))
-
-    get_user = [user for user in USERS if user.email == email]
-    found_user = get_user[0]
-    found_user.password = new_password
-    return make_response(jsonify({'message':'Password reset success'}),200)
-
-@conn.route('/api/auth/users', methods=['GET'])
-def get_all_users():
-    """returns all the registered users"""
-    user = USERS
-    #found_user=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
-    result =json.dumps(user, indent=4, separators=(',', ': '), default=json_default_format)
-    return make_response(jsonify({'result':result}),200)
-
-
-@conn.route('/api/v1/business', methods=['POST'])
+@biz.route('/api/v1/business', methods=['POST'])
 def register_business():
     """Registers non existing businesses"""
     new_business = request.get_json()
@@ -147,7 +59,7 @@ def register_business():
     BUSINESS.append(new_business)
     return jsonify({'Message':'Business successfully registered'}),201
 
-@conn.route('/api/v1/business/', methods= ['GET'])
+@biz.route('/api/v1/business/', methods= ['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
     business = BUSINESS
@@ -156,7 +68,7 @@ def get_all_businesses():
     return make_response(jsonify(found_business),200)                
 
 
-@conn.route('/api/v1/business/<int:business_id>', methods=['GET'])
+@biz.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
     """Gets a particular bsuiness by id"""
     business=[business for business in BUSINESS if business.id==business_id]
@@ -173,7 +85,7 @@ def get_by_id(business_id):
                    }
     return make_response(jsonify(found_business),200)
 
-@conn.route('/api/v1/business/<int:business_id>', methods=['PUT'])
+@biz.route('/api/v1/business/<int:business_id>', methods=['PUT'])
 def update_by_id(business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
@@ -193,7 +105,7 @@ def update_by_id(business_id):
     return make_response(jsonify(updated_business),200)
 
 
-@conn.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
+@biz.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 def delete_business_by_id(business_id):
     """Endpoint for deleting requested business by id"""
     business=[business for business in BUSINESS if business.id==business_id]
@@ -203,7 +115,7 @@ def delete_business_by_id(business_id):
     return jsonify({'message':'Business successfully deleted'}),202
 
 
-@conn.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
+@biz.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
 def add_review(business_id):
     new_review = request.get_json()
     business=[business for business in BUSINESS if business.id==business_id]
@@ -226,7 +138,7 @@ def add_review(business_id):
 
 
 
-@conn.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
+@biz.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
 def get_all_reviews(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
