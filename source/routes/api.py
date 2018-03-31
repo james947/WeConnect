@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
-from passlib.hash import sha256_crypt
 from functools import wraps
 import re
 import uuid
