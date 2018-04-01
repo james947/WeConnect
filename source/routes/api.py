@@ -63,8 +63,8 @@ def login():
     user_login = [user for user in USERS if user.email == email]
     if user_login:
         user_login = user_login[0]
-        if password == user_login.password and email == user_login.email:
-            session['user'] == email
+        is_user_password = sha256_crypt.verify(str(password), user_login.password)
+        if is_user_password and email == user_login.email:
             return jsonify({'message':'logged in successfully'}), 200
         return jsonify({'message':'Password not correct'})
     return make_response(jsonify({'message':'Email not found'}))
