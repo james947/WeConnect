@@ -57,9 +57,9 @@ def register_business(current_user):
     if  not duplicate:
         new_business=Business(businessname=businessname,description=description,
                               category=category,location=location,owner_id=current_user.id)
-        new_business.save()
+        db.session.add(new_business)
+        db.session.commit()
         return jsonify({'Message':'Business successfully registered'}),201
-
     return make_response(jsonify({'message':'Business already exists'}),409)
  
    
@@ -68,9 +68,21 @@ def register_business(current_user):
 @token_required
 def get_all_businesses(current_user):
     """Returns the requested business all the registered businesses"""
-    business = BUSINESS
-    found_business=[{business.id : [{'businessname':business.businessname,'description':business.description,
-    'category':business.category,'location':business.location}] for business in BUSINESS}]
+    businesses = Business.query.all()
+    if not businesses:
+        return jsonify({'message':'No business found'}), 401
+    found_business = []
+    for business in businesses:
+        obj = {
+                'id':business.id,
+                'businessname':business.businessname,
+                'description' :business.description,
+                'category': business.category,
+                'owner':business.owner.username,
+                'created_at': business.created_at,
+                'updated_at': business.updated_at
+            }
+        found_business.append(obj)
     return make_response(jsonify(found_business),200)                
 
 
@@ -78,18 +90,21 @@ def get_all_businesses(current_user):
 @token_required
 def get_by_id(current_user, business_id):
     """Gets a particular bsuiness by id"""
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
-    elif business not in BUSINESS: 
+    get_business = Business.query.filter_by(business_id=business_id).first()
+    if not get_business:
         return  make_response(jsonify({'message':'business not found'}),404)
-    found_business={
-                    'id':business.id,
-                    'businessname':business.businessname,
-                    'description':business.description,
-                    'category':business.category,
-                    'location':business.location
-                   }
+    found_business = []
+    obj={
+        'id':get_business.id,
+        'businessname':get_business.businessname,
+        'description':get_business.description,
+        'category':get_business.category,
+        'location':get_business.location,
+        'owner':get_business.owner.username,
+        'created_at': get_business.created_at,
+        'updated_at': get_business.updated_at
+        }
+    found_business.append(obj)
     return make_response(jsonify(found_business),200)
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['PUT'])
@@ -97,68 +112,73 @@ def get_by_id(current_user, business_id):
 def update_by_id(current_user, business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
-        if business in BUSINESS:
+    get_business = Business.query.filter_by(business_id=business_id).first()
+    if get_business:
+        if current_user.id != get_business.user_id:
+            duplicate = Business.query.filter_by(businessname=get_business.businessname).first()
+            if not duplicate:
+                get_business.businessname= request.json['businessname']
+                get_business.description= request.json['description']
+                get_business.category= request.json['category']
+                get_business.location= request.json['location']
+                db.session.add(get_business)
+                db.commit()
+                return make_response(jsonify({'message':'Business successfully updated'}),200)
             return make_response(jsonify({'message':'Business already exists'}),409)
-
-    business.businessname= request.json['businessname']
-    business.description= request.json['description']
-    business.category= request.json['category']
-    business.location= request.json['location']
-    business = BUSINESS
-    updated_business=[{business.id : [{'businessname':business.businessname,'description':business.description,'category':business.category,
-                                        'location':business.location}] for business in BUSINESS}]
-    return make_response(jsonify(updated_business),200)
-
+        return make_response(jsonify({'message':'You can only Update your business'}),409)
+    return make_response(jsonify({'message':'Business does not exists'}),409)
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 @token_required
 def delete_business_by_id(current_user, business_id):
     """Endpoint for deleting requested business by id"""
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
-    BUSINESS.remove(business)
-    return jsonify({'message':'Business successfully deleted'}),202
-
+    get_business = Business.query.filter_by(business_id=business_id).first()
+    if get_business:
+        return jsonify({'message':'Business successfully deleted'}),202
+    return make_response(jsonify({'message':'Business does not exists'}),409)
 
 @biz.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
 @token_required
 def add_review(current_user, business_id):
     new_review = request.get_json()
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
+    get_business = Business.query.filter_by(business_id=business_id).first()
+    if get_business:
 
-    title = new_review['title'],
-    description = new_review['description']
-    business_id = business.id
+        title = new_review['title'],
+        description = new_review['description']
+        business_id = get_business.business_id
 
-    if title == "":
-        return make_response(jsonify({'message':'Title is required'}), 401)
-    elif description == "":
-        return make_response(jsonify({'messaage':'Description is  required'}), 401)
+        if title == "":
+            return make_response(jsonify({'message':'Title is required'}), 401)
+        elif description == "":
+            return make_response(jsonify({'messaage':'Description is  required'}), 401)
 
-    new_review =Reviews(title,description,business_id)
-    REVIEWS.append(new_review)
-
-    return make_response(jsonify({'message':'Review Added Successfully'}),201)
-
+        new_review =Reviews(title,description,business_id)
+        db.session.add(new_review)
+        db.session.commit()
+        return make_response(jsonify({'message':'Review Added Successfully'}),201)
+    return make_response(jsonify({'message':'Business not found'}),201)
 
 
 @biz.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
 @token_required
 def get_all_reviews(current_user, business_id):
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
-    elif business not in BUSINESS:
-            return make_response(jsonify({'message':'Reviews not found'}))
-    business_id = business.id
-    review  = REVIEWS
-    found_business=[{review.id:[{'title':review.title,'description':review.description}]for review in REVIEWS}]
-    return make_response(jsonify(found_business),200)
+    get_business = Business.query.filter_by(business_id=business_id).first()
+    if get_business:
+        get_review = Reviews.query.all()
+        if get_review:
+            output = []
+            for review in get_review:
+                obj = {
+                        'title':review.title,
+                        'description':review.description,
+                        'user':review.reviewer.username,
+                        'created_at': review.created_at,
+                        'updated_at': review.updated_at
+                      }
+                output.append(obj)
+                return make_response(jsonify({'Reviews':output}))
+        return make_response(jsonify({'message':'Reviews not found'}))
+    return make_response(jsonify({'message':'Reviews not found'}),200)
     
  
