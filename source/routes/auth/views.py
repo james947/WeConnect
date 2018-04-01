@@ -106,9 +106,9 @@ def reset_password():
     reset = request.get_json()
     email= reset['email']
     new_password = reset['password']
-
-    available_users=[user.email for user in USERS]
-    if email not in available_users:
+    
+    available_users= Users.query.filter_by(email=email).first()
+    if not available_users:
         return make_response(jsonify({'message':'Email not found'}))
     elif email== "":
         return make_response(jsonify({'message':'Email is required'}),401)
@@ -117,9 +117,7 @@ def reset_password():
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return make_response(jsonify({'message':'Email is invalid'}))
 
-    get_user = [user for user in USERS if user.email == email]
-    found_user = get_user[0]
-    found_user.password = new_password
+    available_users.password = new_password
     return make_response(jsonify({'message':'Password reset success'}),200)
 
 @auth.route('/api/auth/users', methods=['GET'])
