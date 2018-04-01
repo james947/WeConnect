@@ -1,5 +1,5 @@
 class User:
-    count =1 #icrease user id when user signs up
+    count =0 #icrease user id when user signs up
     
     def __init__(self,username,email,password):
         self.username = username
