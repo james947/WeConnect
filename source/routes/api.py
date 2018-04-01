@@ -148,7 +148,7 @@ def get_by_id(business_id):
     if business:
         business = business[0]
     elif business not in BUSINESS: 
-        return  make_response(jsonify({'message':'business not found'}),404)
+        return  make_response(jsonify({'message':'Business not found'}),404)
     found_business={
                     'id':business.id,
                     'businessname':business.businessname,
