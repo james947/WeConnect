@@ -33,7 +33,7 @@ def create_user():
     elif username == "":
         return make_response(jsonify({'message':'Username is required'}),401)
     elif email== "":
-        return make_response(jsonify({'message':'Email is required'}))
+        return make_response(jsonify({'message':'Email is required'}),401)
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return jsonify({'message':'Email is invalid'})
 
@@ -53,22 +53,21 @@ def login():
     email = user_request['email']
     password = user_request['password']
 
-    available_users=[user.email for user in USERS]
-    if email not in available_users:
-        return make_response(jsonify({'message':'Email not found'}))
-    elif email== "":
+    if email== "":
         return make_response(jsonify({'message':'Email is required'}))
     elif password == "":
         return make_response(jsonify({'message':'Password is required'}))   
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return make_response(jsonify({'message':'Email is invalid'}))
-        
+    """Checcks for user by email"""
     user_login = [user for user in USERS if user.email == email]
     if user_login:
         user_login = user_login[0]
-        if password == user_login.password:
+        if password == user_login.password and email == user_login.email:
             session['user'] == email
             return jsonify({'message':'logged in successfully'}), 200
+        return jsonify({'message':'Password not correct'})
+    return make_response(jsonify({'message':'Email not found'}))
 
 
 @app.route('/api/auth/logout')
@@ -124,11 +123,11 @@ def register_business():
     elif businessname == "":
         return jsonify({'message':'Business name required'}), 401
     elif description == "":
-        return jsonify({'messaage':'Description is  required'}), 401
+        return jsonify({'message':'Description is  required'}), 401
     elif category == "":
-        return jsonify({'message':'Category required'}), 401
+        return jsonify({'message':'Category is required'}), 401
     elif location == "":
-        return jsonify ({'message':'Location required'}), 401
+        return jsonify ({'message':'Location is required'}), 401
  
     new_business=Business(businessname,description,location,category)
     BUSINESS.append(new_business)
@@ -140,8 +139,7 @@ def get_all_businesses():
     business = BUSINESS
     found_business=[{business.id : [{'businessname':business.businessname,'description':business.description,
     'category':business.category,'location':business.location}] for business in BUSINESS}]
-    return make_response(jsonify(found_business),200)                
-
+    return jsonify(found_business),200                
 
 @app.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
@@ -213,7 +211,7 @@ def add_review(business_id):
 
 
 
-@app.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
+@app.route('/api/v1/business/<int:business_id>/review', methods=['GET'])
 def get_all_reviews(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
