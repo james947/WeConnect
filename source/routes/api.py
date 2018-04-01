@@ -200,7 +200,7 @@ def add_review(business_id):
     business_id = business.id
 
     if title == "":
-        return make_response(jsonify({'message':'Title name required'}), 401)
+        return make_response(jsonify({'message':'Title is required'}), 401)
     elif description == "":
         return make_response(jsonify({'message':'Description is  required'}), 401)
 
@@ -212,14 +212,15 @@ def add_review(business_id):
 
 @app.route('/api/v1/business/<int:business_id>/review', methods=['GET'])
 def get_all_reviews(business_id):
-    business=[business for business in BUSINESS if business.id==business_id]
+    business = [business for business in BUSINESS if business.id == business_id]
     if business:
         business = business[0]
-    elif business not in BUSINESS:
-            return jsonify({'message':'Reviews not found'})
+    else:
+        return jsonify({'message': 'Reviews not found'})
+
     business_id = business.id
-    review  = REVIEWS
-    found_business=[{review.id:[{'title':review.title,'description':review.description}]for review in REVIEWS}]
-    return make_response(jsonify(found_business),200)
+    reviews = [review for review in REVIEWS if review.business_id == business_id]
+    found_business = [{review.id: {'title': review.title, 'description': review.description}} for review in reviews]
+    return make_response(jsonify(found_business), 200)
     
  
