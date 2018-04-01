@@ -25,50 +25,38 @@ class TestIntegrations(TestCase):
 
 
     def test_business_registration(self):
-        """ 
-        test business successfully is registered
-
-        """
+        """ test business successfully is registered"""
         response = self.app.post('/api/v1/business', data=json.dumps(self.business), headers={'content-type':'application/json'})
         self.assertEqual(response.status_code, 201)
         response_msg = json.loads(response.data.decode())
         self.assertIn("Business successfully registered", response_msg["Message"])
 
     # def test_returns_all_businesses(self):
-    #     """ 
-    #     test all businesses are returned
-    #     """
-    #     response = self.app.post('/api/v1/business', data=json.dumps(self.business), headers={'content-type':'application/json'})
+    #     """test all businesses are returned"""
+    #     response = self.app.post('/api/v1/business', data=json.dumps(dict(businessname="Tecno",description="yoyo",category="blabla",location="runda")), headers={'content-type':'application/json'})
     #     self.assertEqual(response.status_code, 201)
     #     response = self.app.get('/api/v1/business')
-    #     self.assertIn("Techbase", response.data)
+    #     self.assertEqual(response.content_type, 'application/json')
         
 
-    # def test_api_can_get_business_by_id(self):
-    #     """
-    #     get business by id
+    def test_api_can_get_business_by_id(self):
+        """get business by id"""
+        self.app.post('/api/v1/business', data=json.dumps(dict(businessname="Tecno",description="yoyo",category="blabla",location="runda")), headers={'content-type':'application/json'})
+        response = self.app.get('/api/v1/business/0')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content_type, 'application/json')
 
-    #     """
-    #     self.app.post('/api/v1/business', data=self.business)
-    #     response = self.app.get('/api/v1/business/0')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.content_type, 'application/json')
-
-    # def test_get_by_ivalid_id(self):
-    #     """
-    #     tests if the id is not valid
-    #     """
-    #     response = self.app.post('/api/v1/business', data=json.dumps(self.business), headers={'content-type':'application/json'})
-    #     self.assertEqual(response.status_code, 201)
-    #     response = self.app.get('/api/v1/business/4')
-    #     self.assertEqual(response.status_code, 404)
-    #     response_msg = json.loads(response.decode.data("UTF-8"))
-    #     self.assertIn("Business not found", response_msg["Message"])
+    def test_get_by_ivalid_id(self):
+        """tests if the get business by invalid id"""
+        response = self.app.post('/api/v1/business', data=json.dumps(dict(businessname="Tecno",description="yoyo",category="blabla",location="runda")), headers={'content-type':'application/json'})
+        self.assertEqual(response.status_code, 201)
+        response = self.app.get('/api/v1/business/4')
+        self.assertEqual(response.status_code, 404)
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn("Business not found", response_msg["message"])
 
     def test_add_empty_business_name(self):
-        """
-        tests addition of a empty business name
-        """
+        """tests addition of a empty business name"""
         response = self.app.post('/api/v1/business', data=json.dumps(dict(businessname="",description="yoyo",category="blabla",location="runda")),headers={'content-type': 'application/json'})
         self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode("UTF-8"))
@@ -90,18 +78,15 @@ class TestIntegrations(TestCase):
         self.assertIn("Location is required", response_msg['message'])
 
     def test_add_empty_business_description(self):
-        """
-        tests addition of a null description
-        """
+        """tests addition of a null description"""
         response = self.app.post('/api/v1/business',data=json.dumps(dict(businessname="techbase", description="", category="electronics", location="juja")),content_type="application/json")
         self.assertEqual(response.status_code, 401)
         response_msg = json.loads(response.data.decode())
         self.assertIn("Description is  required",response_msg['message'])
 
     # def test_business_can_be_edited(self):
-    #     """
-    #     tests if business posted can be edited
-    #     """
+    #     """tests if business posted can be edited"""
+
     #     response = self.app.post('/api/v1/business',
     #                              data=json.dumps(dict(businessname="techbase", description="we sell laptops", category="electronics", location="juja")), content_type="application/json")
     #     response = self.app.put('/api/v1/business/0',
