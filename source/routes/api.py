@@ -202,11 +202,10 @@ def add_review(business_id):
     if title == "":
         return make_response(jsonify({'message':'Title name required'}), 401)
     elif description == "":
-        return make_response(jsonify({'messaage':'Description is  required'}), 401)
+        return make_response(jsonify({'message':'Description is  required'}), 401)
 
     new_review =Reviews(title,description,business_id)
     REVIEWS.append(new_review)
-
     return make_response(jsonify({'message':'Review Added Successfully'}),201)
 
 
