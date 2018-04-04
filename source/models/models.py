@@ -1,4 +1,6 @@
-from source.routes.api import db
+# from source.routes.api import db
+from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
 
 class Users(db.Model):
     __tablename__ = 'users'
@@ -8,7 +10,6 @@ class Users(db.Model):
     username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    cpassword = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, 
         default=db.func.current_timestamp(),
