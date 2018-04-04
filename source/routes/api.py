@@ -5,15 +5,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 import os
-
+from .auth.views import token_required
 
 biz = Blueprint('biz', __name__)
 from flask_api import FlaskAPI
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
+from source.models.models import db
 
- 
-# instacne of sql-alchemy
-db = SQLAlchemy()
+"""import model classes"""
+from source.models.models import Users, Business, Reviews
+
+
+# local import
+from instance.config import app_config
+
 
 """wraps the creation of a new Flask object"""
 def create_app(config_name):
@@ -27,11 +32,7 @@ def create_app(config_name):
     app.register_blueprint(auth)
     return app
 
-"""import model classes"""
-from source.models.models import Users, Business, Reviews
-from .auth.views import token_required
-# local import
-from instance.config import app_config
+
 
 @biz.route('/api/v1/business', methods=['POST'])
 @token_required
@@ -94,7 +95,7 @@ def get_by_id(current_user, business_id):
     if not get_business:
         return  make_response(jsonify({'message':'business not found'}),404)
     found_business = []
-    obj={
+    obj ={
         'id':get_business.id,
         'businessname':get_business.businessname,
         'description':get_business.description,
@@ -114,7 +115,7 @@ def update_by_id(current_user, business_id):
     #get business by id then update from the json post request
     get_business = Business.query.filter_by(id=business_id).first()
     if get_business:
-        if current_user.id != get_business.owner_id:
+        if current_user.id == get_business.owner_id:
             duplicate = Business.query.filter_by(businessname=get_business.businessname).first()
             if not duplicate:
                 get_business.businessname= request.json['businessname']
@@ -136,7 +137,7 @@ def delete_business_by_id(current_user, business_id):
     # if current_user.id != get_business.owner_id
         
     if get_business:
-        if current_user.id != get_business.owner.id:
+        if current_user.id == get_business.owner.id:
             db.session.delete(get_business)
             db.session.commit()
             return jsonify({'message':'Business successfully deleted'}),202
