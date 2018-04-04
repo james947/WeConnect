@@ -5,14 +5,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 import os
-from .auth.views import token_required
+
 
 biz = Blueprint('biz', __name__)
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
-# local import
-from instance.config import app_config
  
 # instacne of sql-alchemy
 db = SQLAlchemy()
@@ -31,7 +29,9 @@ def create_app(config_name):
 
 """import model classes"""
 from source.models.models import Users, Business, Reviews
-
+from .auth.views import token_required
+# local import
+from instance.config import app_config
 
 @biz.route('/api/v1/business', methods=['POST'])
 @token_required
@@ -44,7 +44,7 @@ def register_business(current_user):
     location =new_business['location']
     
     if businessname == "":
-        return jsonify({'message':'Business name required'}), 401
+        return make_response(jsonify({'message':'Business name required'}), 401)
     elif description == "":
         return make_response(jsonify({'messaage':'Description is  required'}), 401)
     elif category == "":
@@ -79,8 +79,8 @@ def get_all_businesses(current_user):
                 'description' :business.description,
                 'category': business.category,
                 'owner':business.owner.username,
-                'created_at': business.created_at,
-                'updated_at': business.updated_at
+                'created_at': business.date_created,
+                'updated_at': business.date_modified
             }
         found_business.append(obj)
     return make_response(jsonify(found_business),200)                
@@ -89,8 +89,8 @@ def get_all_businesses(current_user):
 @biz.route('/api/v1/business/<int:business_id>', methods=['GET'])
 @token_required
 def get_by_id(current_user, business_id):
-    """Gets a particular bsuiness by id"""
-    get_business = Business.query.filter_by(business_id=business_id).first()
+    """Gets a particular business by id"""
+    get_business = Business.query.filter_by(id=business_id).first()
     if not get_business:
         return  make_response(jsonify({'message':'business not found'}),404)
     found_business = []
@@ -101,8 +101,8 @@ def get_by_id(current_user, business_id):
         'category':get_business.category,
         'location':get_business.location,
         'owner':get_business.owner.username,
-        'created_at': get_business.created_at,
-        'updated_at': get_business.updated_at
+        'created_at': get_business.date_created,
+        'updated_at': get_business.date_modified
         }
     found_business.append(obj)
     return make_response(jsonify(found_business),200)
@@ -112,9 +112,9 @@ def get_by_id(current_user, business_id):
 def update_by_id(current_user, business_id):
     """"updates business by id"""
     #get business by id then update from the json post request
-    get_business = Business.query.filter_by(business_id=business_id).first()
+    get_business = Business.query.filter_by(id=business_id).first()
     if get_business:
-        if current_user.id != get_business.user_id:
+        if current_user.id != get_business.owner_id:
             duplicate = Business.query.filter_by(businessname=get_business.businessname).first()
             if not duplicate:
                 get_business.businessname= request.json['businessname']
@@ -132,9 +132,15 @@ def update_by_id(current_user, business_id):
 @token_required
 def delete_business_by_id(current_user, business_id):
     """Endpoint for deleting requested business by id"""
-    get_business = Business.query.filter_by(business_id=business_id).first()
+    get_business = Business.query.filter_by(id=business_id).first()
+    # if current_user.id != get_business.owner_id
+        
     if get_business:
-        return jsonify({'message':'Business successfully deleted'}),202
+        if current_user.id != get_business.owner.id:
+            db.session.delete(get_business)
+            db.session.commit()
+            return jsonify({'message':'Business successfully deleted'}),202
+        return make_response(jsonify({'message':'You can only delete your business'}),409)
     return make_response(jsonify({'message':'Business does not exists'}),409)
 
 @biz.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
