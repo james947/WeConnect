@@ -168,10 +168,10 @@ def add_review(current_user, id):
     return make_response(jsonify({'message':'Business not found'}),201)
 
 
-@biz.route('/api/v1/business/<int:business_id>/reviews', methods=['GET'])
-@token_required
-def get_all_reviews(current_user, business_id):
-    get_business = Business.query.filter_by(business_id=business_id).first()
+@biz.route('/api/v1/business/<int:id>/reviews', methods=['GET'])
+# @token_required
+def get_all_reviews(id):
+    get_business = Business.query.filter_by(id=id).first()
     if get_business:
         get_review = Reviews.query.all()
         if get_review:
@@ -179,10 +179,10 @@ def get_all_reviews(current_user, business_id):
             for review in get_review:
                 obj = {
                         'title':review.title,
-                        'description':review.description,
+                        'review':review.review,
                         'user':review.reviewer.username,
-                        'created_at': review.created_at,
-                        'updated_at': review.updated_at
+                        'created_at': review.date_created,
+                        'updated_at': review.date_modified
                       }
                 output.append(obj)
                 return make_response(jsonify({'Reviews':output}))
