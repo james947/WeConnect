@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
+from flask import Flask, jsonify, abort, request, make_response,json, session, Blueprint
 from functools import wraps
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -144,23 +144,24 @@ def delete_business_by_id(current_user, business_id):
         return make_response(jsonify({'message':'You can only delete your business'}),409)
     return make_response(jsonify({'message':'Business does not exists'}),409)
 
-@biz.route('/api/v1/business/<int:business_id>/review', methods=['POST'])
+@biz.route('/api/v1/business/<int:id>/review', methods=['POST'])
 @token_required
-def add_review(current_user, business_id):
+def add_review(current_user, id):
     new_review = request.get_json()
-    get_business = Business.query.filter_by(business_id=business_id).first()
+    get_business = Business.query.filter_by(id=id).first()
     if get_business:
 
         title = new_review['title'],
-        description = new_review['description']
-        business_id = get_business.business_id
+        review = new_review['review']
+        business_id = get_business.id
+        owner_id = current_user.id 
 
         if title == "":
             return make_response(jsonify({'message':'Title is required'}), 401)
-        elif description == "":
+        elif review == "":
             return make_response(jsonify({'messaage':'Description is  required'}), 401)
 
-        new_review =Reviews(title,description,business_id)
+        new_review =Reviews(title=title, review = review, business_id = get_business.id, owner_id = current_user.id)
         db.session.add(new_review)
         db.session.commit()
         return make_response(jsonify({'message':'Review Added Successfully'}),201)
