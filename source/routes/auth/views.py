@@ -1,5 +1,5 @@
 from . import auth
-from flask import Flask, jsonify, abort, request, make_response,json, session,Blueprint
+from flask import Flask, jsonify, abort, request, make_response, json, session, Blueprint
 from functools import wraps
 import re
 import uuid
@@ -8,8 +8,8 @@ import jwt
 import datetime
 import os
 
+from source.models.models import Users, db
 
-from source.models.models import Users
 
 
 def token_required(f):
@@ -28,7 +28,7 @@ def token_required(f):
             data = jwt.decode(token, os.getenv('SECRET'))
             current_user = Users.query.filter_by(public_id=data['public_id']).first()
         except:
-            return jsonify({'m essage': 'Token is invalid!'}), 401
+            return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(current_user, *args, **kwargs)
 
@@ -47,7 +47,9 @@ def create_user():
     email = user['email']
     username = user['username']
     password= user['password']
-    
+
+    # if username.strip():
+    #     return make_response(jsonify({'message':'Whitespaces are not allowed'}),401)
     if username == "":
         return make_response(jsonify({'message':'Username is required'}),401)
     elif email== "":
@@ -74,7 +76,7 @@ def create_user():
 def login():
     """if request is validated then user is logged in."""
     user_request=request.get_json()
-    # session.pop('user', None)
+    session.pop('user', None)
     username = user_request['username']
     password = user_request['password']
 
@@ -88,20 +90,22 @@ def login():
         return make_response(jsonify({'message':'User not found'}))
     """checks correct password"""
     if check_password_hash(user.password, password):
-        # session['username'] = user_request['username']
+        session['loggedin'] = True
+        session['username'] = user_request['username']
         token =jwt.encode({'public_id' : user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes =25)}, os.getenv('SECRET'))
         return jsonify({'token':token.decode('UTF-8')})
     return make_response(jsonify({'message':'Wrong Password'}))
 
-@auth.route('/api/auth/logout')
+@auth.route('/api/auth/logout', methods=['DELETE'])
 def logout():
     """clears sessions"""
-    session.pop('user', None)
-    return make_response(jsonify({'message':'Logged out successfuly'}), 200)
+    if session and session['loggedin']:
+        session.clear()
+    return make_response(jsonify({'message':'Logged out successfully'}), 200)
     
 @auth.route('/api/v1/auth/reset-password', methods = ['PUT'])
 @token_required
-def reset_password():
+def reset_password(current_user):
     """Resets password"""
     reset = request.get_json()
     email= reset['email']
@@ -117,7 +121,9 @@ def reset_password():
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
         return make_response(jsonify({'message':'Email is invalid'}))
 
-    available_users.password = new_password
+    current_user.password = new_password
+    db.session.add(current_user)
+    db.session.commit()
     return make_response(jsonify({'message':'Password reset success'}),200)
 
 @auth.route('/api/auth/users', methods=['GET'])
