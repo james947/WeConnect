@@ -50,21 +50,5 @@ class Reviews(db.Model):
 
 
 
-    def __init__(self, username):
-        """initialize with usernamename."""
-        self.username = username
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    @staticmethod
-    def get_all():
-        return Business.query.all()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
 
 
