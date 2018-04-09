@@ -7,7 +7,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 import os
-
 from source.models.models import Users, db
 
 
@@ -51,13 +50,13 @@ def create_user():
     # if username.strip():
     #     return make_response(jsonify({'message':'Whitespaces are not allowed'}),401)
     if username == "":
-        return make_response(jsonify({'message':'Username is required'}),401)
+        return make_response(jsonify({'message':'Username is required'}), 401)
     elif email== "":
-        return make_response(jsonify({'message':'Email is required'}))
+        return make_response(jsonify({'message':'Email is required'}), 401)
     elif not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-        return make_response(jsonify({'message':'Email is invalid'}))
+        return make_response(jsonify({'message':'Email is invalid'}), 401)
     elif password == "":
-        return make_response(jsonify({'message':'Password is required'}),401)
+        return make_response(jsonify({'message':'Password is required'}), 401)
 
     available_emails =  Users.query.filter_by(email=email).first()
     if available_emails == None:
@@ -66,9 +65,9 @@ def create_user():
         new_user=Users(public_id=str(uuid.uuid4()), username=username, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
-        return make_response(jsonify({'Message':'User successfully registered'}),201)
+        return make_response(jsonify({'Message':'User successfully registered'}), 201)
     elif email in available_emails.email:
-        return make_response(jsonify({'message':'Email is already registered'}),400) 
+        return make_response(jsonify({'message':'Email is already registered'}), 400) 
 
         
 
@@ -87,14 +86,14 @@ def login():
     """seach user in db"""
     user =  Users.query.filter_by(username=username).first()
     if not user:
-        return make_response(jsonify({'message':'User not found'}))
+        return make_response(jsonify({'message':'User not found'}), 404)
     """checks correct password"""
     if check_password_hash(user.password, password):
         session['loggedin'] = True
         session['username'] = user_request['username']
         token =jwt.encode({'public_id' : user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes =25)}, os.getenv('SECRET'))
         return jsonify({'token':token.decode('UTF-8')})
-    return make_response(jsonify({'message':'Wrong Password'}))
+    return make_response(jsonify({'message':'Wrong Password'}), 401)
 
 @auth.route('/api/auth/logout', methods=['DELETE'])
 def logout():
