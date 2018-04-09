@@ -7,7 +7,7 @@ install:
 services:
   - postgresql
 before_script:
-  - createdb test_weconnect
+  - createdb weconnect_test
 script: 
   - nosetests --with-coverage --cover-package=source
 after_success:
