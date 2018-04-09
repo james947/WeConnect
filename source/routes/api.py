@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
 import os
-from .auth.views import token_required
+from source.routes.auth.views import token_required
 
 biz = Blueprint('biz', __name__)
 from flask_api import FlaskAPI
@@ -45,13 +45,13 @@ def register_business(current_user):
     location =new_business['location']
     
     if businessname == "":
-        return make_response(jsonify({'message':'Business name required'}), 401)
+        return make_response(jsonify({'message':'Businessname required'}), 401)
     elif description == "":
         return make_response(jsonify({'message':'Description is  required'}), 401)
     elif category == "":
-        return make_response(jsonify({'message':'Category required'}), 401)
+        return make_response(jsonify({'message':'Category name required'}), 401)
     elif location == "":
-        return make_response(jsonify ({'message':'Location required'}), 401)
+        return make_response(jsonify ({'message':'Location name required'}), 401)
     """checks if business is duplicate """
     duplicate = Business.query.filter_by(businessname=businessname).first()
 
@@ -60,7 +60,7 @@ def register_business(current_user):
                               category=category,location=location,owner_id=current_user.id)
         db.session.add(new_business)
         db.session.commit()
-        return jsonify({'Message':'Business successfully registered'}),201
+        return jsonify({'message':'Business successfully registered'}),201
     return make_response(jsonify({'message':'Business already exists'}),409)
  
    
@@ -170,23 +170,22 @@ def add_review(current_user, id):
 
 @biz.route('/api/v1/business/<int:id>/reviews', methods=['GET'])
 @token_required
-def get_all_reviews(id):
+def get_all_reviews(current_user, id):
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
         get_review = Reviews.query.all()
         if get_review:
-            output = []
+            found_review = []
             for review in get_review:
                 obj = {
                         'title':review.title,
                         'review':review.review,
-                        'user':review.reviewer.username,
+                        'reviewer':review.reviewer.username,
                         'created_at': review.date_created,
                         'updated_at': review.date_modified
                       }
-                output.append(obj)
-                return make_response(jsonify({'Reviews':output}))
+
+                found_review.append(obj)
+                return make_response(jsonify(found_review))
         return make_response(jsonify({'message':'Reviews not found'}))
-    return make_response(jsonify({'message':'Reviews not found'}),200)
-    
- 
+    return make_response(jsonify({'message':'Business not found'}),200)
