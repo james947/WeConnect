@@ -14,7 +14,7 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:8247@localhost/weconnect_test'
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL')
     DEBUG = True
 
 class StagingConfig(BaseConfig):
