@@ -65,7 +65,7 @@ def register_business(current_user):
  
    
 
-@biz.route('/api/v1/business/', methods= ['GET'])
+@biz.route('/api/v1/business', methods= ['GET'])
 @token_required
 def get_all_businesses(current_user):
     """Returns the requested business all the registered businesses"""
@@ -93,7 +93,7 @@ def get_by_id(current_user, business_id):
     """Gets a particular business by id"""
     get_business = Business.query.filter_by(id=business_id).first()
     if not get_business:
-        return  make_response(jsonify({'message':'business not found'}),404)
+        return  make_response(jsonify({'message':'Business not found'}),404)
     found_business = []
     obj = {
         'id':get_business.id,
@@ -127,7 +127,7 @@ def update_by_id(current_user, business_id):
                 return make_response(jsonify({'message':'Business successfully updated'}), 200)
             return make_response(jsonify({'message':'Business already exists'}), 409)
         return make_response(jsonify({'message':'You can only Update your business'}), 409)
-    return make_response(jsonify({'message':'Business does not exists'}), 409)
+    return make_response(jsonify({'message':'Business does not exists'}), 404)
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 @token_required
