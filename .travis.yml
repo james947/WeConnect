@@ -1,17 +1,12 @@
-
 language: python
-
 python :
   - "3.6"
 install:
   - pip install -r requirements.txt
   - pip install coveralls
 script: 
-  - coverage report
   - nosetests --with-coverage --cover-package=source
-
 after_success:
- 
   - coveralls
 
 notifications:
@@ -19,3 +14,5 @@ notifications:
     on_success: never
     on_failure: never
   email: false
+
+  
