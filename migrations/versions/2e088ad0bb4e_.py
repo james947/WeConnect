@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 53f78149aee8
+Revision ID: 2e088ad0bb4e
 Revises: 
-Create Date: 2018-03-29 22:42:48.900791
+Create Date: 2018-04-04 04:45:18.870080
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '53f78149aee8'
+revision = '2e088ad0bb4e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,12 +22,14 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('public_id', sa.String(length=50), nullable=True),
     sa.Column('username', sa.String(length=50), nullable=False),
+    sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('password', sa.String(length=100), nullable=False),
+    sa.Column('cpassword', sa.String(length=100), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('public_id'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('public_id')
     )
     op.create_table('business',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -40,10 +42,7 @@ def upgrade():
     sa.Column('date_modified', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('businessname'),
-    sa.UniqueConstraint('category'),
-    sa.UniqueConstraint('description'),
-    sa.UniqueConstraint('location')
+    sa.UniqueConstraint('businessname')
     )
     op.create_table('reviews',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -51,11 +50,11 @@ def upgrade():
     sa.Column('review', sa.String(length=50), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
+    sa.Column('business_id', sa.Integer(), nullable=True),
     sa.Column('date_modified', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['business_id'], ['business.id'], ),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('review'),
-    sa.UniqueConstraint('title')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 
