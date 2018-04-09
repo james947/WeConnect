@@ -87,43 +87,41 @@ class TestUsersTestcase(unittest.TestCase):
         response_msg = json.loads(response.data.decode())
         self.assertIn("Business successfully registered", response_msg["message"])
 
-    # def test_returns_all_businesses(self):
-    #     """test all businesses are returned"""
+    def test_returns_all_businesses(self):
+        """test all businesses are returned"""
 
-    #     response = self.client().post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
-    #     login = self.client().post('/api/v1/login', data=json.dumps(dict(username="james",password="123456")), content_type="application/json")
-    #     data = json.loads(login.data.decode("UTF-8"))
-    #     token = data['token']
-    #     response = self.client().post('/api/v1/business', data=json.dumps(self.business), content_type="application/json", headers={"x-access-token":token})
-    #     self.assertEqual(response.status_code, 201)
-    #     response = self.client().get('/api/v1/business',  content_type="application/json", headers={"x-access-token":token})
-    #     self.assertEqual(response.status_code, 200)
-    #     response_msg = json.loads(response.data.decode())
-    #     self.assertIn("Techbase", response_msg["message"])
+        register = self.client().post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        login = self.client().post('/api/v1/login', data=json.dumps(dict(username="james", password="123456")), content_type="application/json")
+        data = json.loads(login.data.decode("UTF-8"))
+        token = data['token']
+        response = self.client().post('/api/v1/business', data=json.dumps(self.business), content_type="application/json", headers={"x-access-token":token})
+        resp = self.client().get('/api/v1/business', headers={"x-access-token":token})
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Techbase", str(resp.data))
 
-    # def test_api_can_get_business_by_id(self):
-    #     """
-    #     get business by id
+    def test_api_can_get_business_by_id(self):
+        """get business by id"""
+        register = self.client().post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        login = self.client().post('/api/v1/login', data=json.dumps(dict(username="james", password="123456")), content_type="application/json")
+        data = json.loads(login.data.decode("UTF-8"))
+        token = data['token']
+        resp = self.client().post('/api/v1/business', data=json.dumps(self.business), content_type="application/json", headers={"x-access-token":token})
+        result = self.client().get('/api/v1/business/1', headers={"x-access-token":token})
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('we sell laptops', str(result.data))
 
-    #     """
-    #     response = self.client().post('/api/v1/business', data=json.dumps(self.business))
-    #     self.assertEqual(response.status_code, 201)
-    #     result_in_json = json.loadsresponse.data.decode('utf-8').replace("'", "\""))
-    #     result = self.app.get('/api/auth/v2/business/{}'.format(result_in_json['id']))
-    #     self.assertEqual(result.status_code, 200)
-    #     self.assertIn('we sell laptops', str(result.data))
-
-#     def test_get_by_ivalid_id(self):
-#         """
-#         tests if the id is not valid``
-#         """
-#         response = self.app.post(
-#             '/api/v2/business', data=self.business)
-#         self.assertEqual(response.status_code, 201)
-#         response = self.app.get('/api/auth/v2/business/4')
-#         self.assertEqual(response.status_code, 404)
-#         response_msg = json.loads(response.data)
-#         self.assertIn("Business not found", response_msg["Message"])
+    def test_get_by_ivalid_id(self):
+        """
+        tests if the id is not valid``
+        """
+        response = self.client().post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        login = self.client().post('/api/v1/login', data=json.dumps(dict(username="james",password="123456")), content_type="application/json")
+        data = json.loads(login.data.decode("UTF-8"))
+        token = data['token']
+        register = self.client().post('/api/v/business', data=self.business, content_type="application/json", headers={"x-access-token":token})
+        response = self.client().get('/api/v1/business/4', headers={"x-access-token":token})
+        response_msg = json.loads(response.data)
+        self.assertIn("Business not found", response_msg["message"])
 
     def test_add_empty_business_name(self):
         """tests empty business name"""
@@ -177,13 +175,16 @@ class TestUsersTestcase(unittest.TestCase):
         """
         tests if business posted can be edited
         """
-        response = self.client().post('/api/v1/business',
-                                 data=json.dumps(self.business), content_type="application/json")
-        self.assertEqual(response.status_code, 201)
+        resp = self.client().post('/api/auth/v1/register', data=json.dumps(self.person), headers={'content-type':"application/json"})
+        login = self.client().post('/api/v1/login', data=json.dumps(dict(username="james",password="123456")), content_type="application/json")
+        data = json.loads(login.data.decode("UTF-8"))
+        token = data['token']
+        resp_1 = self.client().post('/api/v1/business',
+                                 data=json.dumps(self.business), content_type="application/json",  headers={"x-access-token":token})                       
         response = self.client().put('/api/v1/business/1',
-                                data=dict(businessname="Ramtoms", description="sell iron boxes", category="electronics", location="juja"))
+                                data=json.dumps(dict(businessname="Ramtoms", description="sell iron boxes", category="electronics", location="juja")), content_type="application/json",  headers={"x-access-token":token})
         self.assertEqual(response.status_code, 200)
-        results = self.client().get('/api/v1/business/1')
+        results = self.client().get('/api/v1/business/1', headers={"x-access-token":token})
         self.assertIn("sell iron boxes", str(results.data))
 
     def test_delete(self):
