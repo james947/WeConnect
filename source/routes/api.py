@@ -151,7 +151,7 @@ def add_review(current_user, id):
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
 
-        title = new_review['title'],
+        title = new_review['title']
         review = new_review['review']
         business_id = get_business.id
         owner_id = current_user.id 
