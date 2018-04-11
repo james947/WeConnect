@@ -28,9 +28,6 @@ class TestUsersTestcase(unittest.TestCase):
             db.drop_all()
             db.create_all()
 
-        # self.login = login= self.client().post('/api/v1/login', data=json.dumps(dict(username="james",password="12345")), headers={'content-type':"application/json"})
-        # self.data = json.loads(self.login.get_data(as_text=True))
-        # self.token = self.data['token']
 
     def test_users_registration_empty_username(self):
         """tests if  username is empty"""

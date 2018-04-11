@@ -202,10 +202,4 @@ class TestUsersTestcase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-#     def teardown(self):
-#         del self.business
-#         pass
 
-
-# if __name__ == '__main__':
-#      app.run(debug=True)
