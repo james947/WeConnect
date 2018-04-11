@@ -4,7 +4,7 @@ WECONNECT
 [![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=challenge_3)](https://travis-ci.org/james947/WeConnect)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/982f0c5de2f04f318156fb8f9a095e3b)](https://www.codacy.com/app/james947/WeConnect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=james947/WeConnect&amp;utm_campaign=Badge_Grade)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
-[![codecov](https://codecov.io/gh/james947/WeConnect/branch/master/graph/badge.svg)](https://codecov.io/gh/james947/WeConnect)
+[![codecov](https://codecov.io/gh/james947/WeConnect/branch/challenge_3/graph/badge.svg)](https://codecov.io/gh/james947/WeConnect)
 Features
 ===
 The users can perform the following functions:
