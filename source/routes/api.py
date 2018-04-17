@@ -46,7 +46,7 @@ def create_user():
 @app.route('/api/v1/login', methods = ['POST'])
 def login():
     """if request is validated then user is logged in."""
-    user_request=request.get_json()
+    user_request = request.get_json()
     session.pop('current_user', None)
     email = user_request['email']
     password = user_request['password']
