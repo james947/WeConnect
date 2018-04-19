@@ -4,6 +4,7 @@ WECONNECT
 [![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=challenge_2)](https://travis-ci.org/james947/WeConnect)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/982f0c5de2f04f318156fb8f9a095e3b)](https://www.codacy.com/app/james947/WeConnect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=james947/WeConnect&amp;utm_campaign=Badge_Grade)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
+
 Features
 ===
 The users can perform the following functions:
@@ -51,10 +52,6 @@ Api endpoints
 3. Reviews
 - `POST /api/v1/businesses/<business_id>/reviews` Review a business
 - `GET /api/v1/businesses/<business_id>/reviews` Get business' reviews
-4. Filter
-- `GET /api/v1/businesses/<business_id>/category/<category>` Search by Category
-- `GET /api/v1/businesses/<business_id>/category/<Location>` Search by Location
-```
 
 Running tests
 ---
@@ -69,6 +66,10 @@ Built With
 1. HTML /CSS
 2. BOOTSRAP
 3. FLASK
+ 
+ Documentation
+ ---
+You can access the doc weconnect13.docs.apiary.io/#
 
 Contributing
 ---
