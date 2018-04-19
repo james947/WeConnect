@@ -179,18 +179,20 @@ def update_by_id(business_id):
     business=[business for business in BUSINESS if business.id==business_id]
     if business:
         business = business[0]
-        if business.id == business_id:
-            business.businessname= businessname
-            business.description= description
-            business.category= category
-            business.location= location
-            if business.businessname == businessname:
-                return jsonify({'message':'Business already exists'}), 409
-            business = BUSINESS
-            updated_business=[{'business.id' :business.id, 'businessname':business.businessname,
-            'description':business.description,'category':business.category,
-            'location':business.location} for business in BUSINESS]
-            return jsonify(updated_business), 200
+    available_business = [biz.businessname for biz in BUSINESS]
+
+    if businessname in available_business:
+        return jsonify({'message': 'Business already exists'}), 409
+        
+        business.businessname= businessname
+        business.description= description
+        business.category= category
+        business.location= location
+        business = BUSINESS
+        updated_business=[{'business.id' :business.id, 'businessname':business.businessname,
+        'description':business.description,'category':business.category,
+        'location':business.location} for business in BUSINESS]
+        return jsonify(updated_business), 200
     return jsonify({'message':'Business not found'}), 404
 
 @app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
@@ -233,7 +235,7 @@ def get_all_reviews(business_id):
     if business:
         business = business[0]
         business_id = business.id
-        review = [{'title':review.tile, 'description':review.description} for review in REVIEWS]
+        review = [{'title':review.title, 'description':review.description} for review in REVIEWS]
         return jsonify(review), 200
     return jsonify({'message': 'Reviews not found'}), 404
 
