@@ -21,17 +21,16 @@ class TestIntegrations(BaseTestCase):
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Review Added Successfully", response_msg["message"]) 
 
-    # def test_add_empty_review_title(self):
-    #     """"tests_ if review_title is empty"""
-    #     self.login_user()
-    #     self.register_user()
-    #     self.business_registration()
-    #     response = self.app.post('/api/v1/business/0/review', 
-    #     data=json.dumps(dict(title="", description="Your app is great")), 
-    #     content_type="application/json")
-    #     self.assertEqual(response.status_code, 401)
-    #     response_msg = json.loads(response.data.decode("UTF-8"))
-    #     self.assertIn("Title is required", response_msg["Message"]) 
+    def test_add_empty_review_title(self):
+        """"tests_ if review_title is empty"""
+        self.login_user()
+        self.register_user()
+        self.business_registration()
+        response = self.app.post('/api/v1/business/0/review', 
+        data=json.dumps(dict(title="", description="Your app is great")), 
+        content_type="application/json")
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn("Title is required", response_msg["message"]) 
 
 
     def test_add_empty_review_description(self):
