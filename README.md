@@ -57,10 +57,12 @@ Running tests
 ---
 
 ```
+
 activate virtual env
 install pip requirements
 pip -r requirements.txt
 run nosetests
+
 ```
 
 Built With
