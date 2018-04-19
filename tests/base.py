@@ -1,4 +1,6 @@
 from source.routes.api import app, BUSINESS, USERS, REVIEWS
+from source.models.business import Business
+from source.models.reviews import Reviews
 from unittest import TestCase
 import json
 
@@ -19,29 +21,44 @@ class BaseTestCase(TestCase):
             'email': 'james20@yahoo.com',
             'password': '123456'
                     }
+
+        self.reviews = {
+            'title' : 'your app is awesome',
+            'description': 'blabla' 
+                        }
     
     def register_user(self):
-        """tests  correct login registration"""
+        """Business registration helper"""
         resp = self.app.post('/api/auth/v1/register', 
         data = json.dumps(self.person), 
         headers = {'content-type': "application/json"})   
         return resp
 
     def login_user(self):
-        """returns correct login """
+        """User login helper"""
         resp = self.app.post('/api/v1/login', 
         data = json.dumps(self.person), 
         headers = {'content-type': "application/json"})
         return resp
 
     def business_registration(self):
-        """ test business successfully is registered"""
+        """ Business registration helper"""
         resp = self.app.post('/api/v1/business', 
         data = json.dumps(self.business), 
         headers = {'content-type':'application/json'})
         return resp
 
+    def new_review(self):
+        """Review Helper"""
+        resp = self.app.post('/api/v1/business/0/review', 
+        data=json.dumps(self.reviews), 
+        headers={'content-type': 'application/json'})
+        return resp     
+
+
     def tearDown(self):
         USERS.clear()
         BUSINESS.clear()
         REVIEWS.clear()
+        Business.count = 0
+        Reviews.count = 0
