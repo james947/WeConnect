@@ -3,7 +3,7 @@ import re
 
 def blank(**data):
     for key in data:
-        name = re.sub('r\s','',data[key])
+        name = re.sub(r'\s+','',data[key])
         if not name:
             return {'message':key + ' is required'}
 def email(data):
