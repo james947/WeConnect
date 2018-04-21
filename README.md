@@ -24,7 +24,6 @@ To run the Api endpoint use either of the following software:
 * Postman
 * Curl
 
-
 Access Endpoints
 ----
 To Access the enpoint follow the directory.
@@ -41,28 +40,26 @@ Api endpoints
 ---
 ```
 1. Users 
-
 -  POST /api/v1/auth/register Creates user account
 -  POST /api/v1/auth/login Log in user
 -  POST /api/v1/auth/logout Logout user
 -  PUT /api/v1/auth/reset-password Resets user password
-2. Businesses
 
+2. Businesses
 -  POST /api/v1/businesses Register new business
 -  GET /api/v1/businesses List all available businesses
 -  PUT /api/v1/businesses/<business_id> Update business 
 -  DELETE /api/v1/businesses/<business_id> Remove business
-3. Reviews
 
+3. Reviews
 -  POST /api/v1/businesses/<business_id>/reviews Review a business
 -  GET /api/v1/businesses/<business_id>/reviews Get business' reviews
 ```
 
 Running the API
 ---
-
 1. To run the API cd into ```cd WeConnect```
-2. create a virtual environment to install your dependencies.
+2. Create a virtual environment to install your dependencies.
 * ```virtualenv -p python3 venv``` for mac and linux users
 * ```virtualenv venv``` for windows users
 3. Activate the virtual environment to install dependecies.
@@ -76,36 +73,35 @@ Running tests
 ---
 To run the tests assert that the virtual environment is activated:
 
-* activate virtual env
-* install pip requirements - ```pip -r requirements.txt```
-* run nosetests
+* Activate virtual env
+* Install pip requirements - ```pip -r requirements.txt```
+* Run nosetests
 
 Built With
 ---
 1. Flask 
 2. Json {}
 
- 
 Documentation
 ---
-You can access the doc weconnect13.docs.apiary.io/#
-
+You can access the docs weconnect13.docs.apiary.io/#
 
 Versioning
 ---
-Version 0.0.1
+- Version 0.0.1
 
 Contributing
 ---
-Contributing to the development of this app is allowed just fork it!!!
-do changes and create a pull request...
+- Contributing to the development of this app is allowed just fork it!!!
+  do changes and create a pull request...
 
 Authors
 ---
 * James Muriuki
 
-
 Acknowledgments
-=== 
+---
 1. Andela kenya
-2. Cohort 25
+2. Flavian 
+3. PMusonye
+4. Georgreen
