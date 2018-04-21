@@ -1,10 +1,8 @@
 from base import BaseTestCase
 import json
 
-
-
 class TestIntegrations(BaseTestCase):
-
+    """tests for business enpoints"""
     def test_business_registration(self):
         """ test business successfully is registered"""
         self.register_user()

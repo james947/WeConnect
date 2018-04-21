@@ -5,10 +5,8 @@ import json
 from base import BaseTestCase
 import json
 
-
-
 class TestIntegrations(BaseTestCase):
-
+    """tests for reviews endpoints"""
     def test_add_new_review(self):
         """Api creates a new review"""
         self.login_user()
