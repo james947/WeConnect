@@ -11,74 +11,94 @@ The users can perform the following functions:
 
 * Register
 * Login
+* Reset Password
 * Register a business
 * Update business profile
-* Search for a business
-* Filter searches by location and category
+* Get businesses
+* Get business by id
 * Delete a business
 
 Prerequisites
 ----
-This are html pages and can run in any browser that supports html eg.
-* Chrome , internet explorer, Safari e.t.c
-* postman for accessing API endpoints
+To run the Api endpoint use either of the following software:
+* Postman
+* Curl
 
-Running the API
----
-Locate the app.py
+
+Access Endpoints
 ----
+To Access the enpoint follow the directory.
+- To access the endpoints cd into the following directory
+* cd WeConnect/source/api 
 
-```
-  
-   cd/WeConnect3
-   cd/Weconnect3/routes/api.py
-   Access the endpoints to use on the API with POSTMAN
+- To access the models
+* cd WeConnect/source/models
 
+- To acess the tests
+* cd WeConnect/tests
 
-```
 Api endpoints
 ---
 ```
 1. Users 
-- `POST /api/v1/auth/register` Creates user account
-- `POST /api/v1/auth/login` Log in user
-- `POST /api/v1/auth/logout` Logout user
-- `PUT /api/v1/auth/reset-password` Resets user password
+
+-  POST /api/v1/auth/register Creates user account
+-  POST /api/v1/auth/login Log in user
+-  POST /api/v1/auth/logout Logout user
+-  PUT /api/v1/auth/reset-password Resets user password
 2. Businesses
-- `POST /api/v1/businesses` Register new business
-- `GET /api/v1/businesses` List all available businesses
-- `PUT /api/v1/businesses/<business_id>` Update business 
-- `DELETE /api/v1/businesses/<business_id>` Remove business
+
+-  POST /api/v1/businesses Register new business
+-  GET /api/v1/businesses List all available businesses
+-  PUT /api/v1/businesses/<business_id> Update business 
+-  DELETE /api/v1/businesses/<business_id> Remove business
 3. Reviews
-- `POST /api/v1/businesses/<business_id>/reviews` Review a business
-- `GET /api/v1/businesses/<business_id>/reviews` Get business' reviews
+
+-  POST /api/v1/businesses/<business_id>/reviews Review a business
+-  GET /api/v1/businesses/<business_id>/reviews Get business' reviews
+```
+
+Running the API
+---
+
+1. To run the API cd into ```cd WeConnect```
+2. create a virtual environment to install your dependencies.
+* ```virtualenv -p python3 venv``` for mac and linux users
+* ```virtualenv venv``` for windows users
+3. Activate the virtual environment to install dependecies.
+* ```source venv/bin/activate``` for mac and linux users
+* ```source venv/scripts/activate``` for windows users
+4. Install the requirements
+```pip -r requirements.txt``` use the command to install dependecies.(mac,linux,windows)
+5. Finally write the following command in your terminal ```python run.py```
 
 Running tests
 ---
+To run the tests assert that the virtual environment is activated:
 
-```
-
-activate virtual env
-install pip requirements
-pip -r requirements.txt
-run nosetests
-
-```
+* activate virtual env
+* install pip requirements - ```pip -r requirements.txt```
+* run nosetests
 
 Built With
 ---
-1. HTML /CSS
-2. BOOTSRAP
-3. FLASK
+1. Flask 
+2. Json {}
+
  
- Documentation
- ---
+Documentation
+---
 You can access the doc weconnect13.docs.apiary.io/#
+
+
+Versioning
+---
+Version 0.0.1
 
 Contributing
 ---
 Contributing to the development of this app is allowed just fork it!!!
-Do changes and create a pull request...
+do changes and create a pull request...
 
 Authors
 ---
