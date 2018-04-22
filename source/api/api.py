@@ -3,7 +3,7 @@ from source.models.business import Business
 from source.models.users import User
 from source.models.reviews import Reviews
 from passlib.hash import sha256_crypt
-from source.routes import validate
+from source.api import validate
 import datetime
 import re
 from flask_jwt_extended import (

@@ -1,4 +1,4 @@
-from source.routes.api import app#import app from source folder
+from source.api.api import app#import app from source folder
 
 
 #starts the app

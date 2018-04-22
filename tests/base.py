@@ -1,4 +1,4 @@
-from source.routes.api import app, BUSINESS, USERS, REVIEWS
+from source.api.api import app, BUSINESS, USERS, REVIEWS
 from source.models.business import Business
 from source.models.reviews import Reviews
 from unittest import TestCase
