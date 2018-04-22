@@ -83,6 +83,7 @@ def logout():
     return jsonify({'message':'Logged out successfuly'})
 
 @app.route('/api/v1/auth/reset-password', methods = ['PUT'])
+@jwt_required
 def reset_password():
     """Resets password"""
     reset = request.get_json()
@@ -116,6 +117,7 @@ def get_all_users():
 
 
 @app.route('/api/v1/business', methods=['POST'])
+@jwt_required
 def register_business():
     """Registers non existing businesses"""
     new_business = request.get_json()
@@ -166,6 +168,7 @@ def get_by_id(business_id):
     return jsonify(found_business), 200
 
 @app.route('/api/v1/business/<int:business_id>', methods=['PUT'])
+@jwt_required
 def update_by_id(business_id):
     """"updates business by id"""
     new_update = request.get_json()
@@ -197,6 +200,7 @@ def update_by_id(business_id):
     return jsonify(updated_business), 200   
 
 @app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
+@jwt_required
 def delete_business_by_id(business_id):
     """Endpoint for deleting requested business by id"""
     target_business= None
