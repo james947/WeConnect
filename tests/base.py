@@ -4,8 +4,6 @@ from source.models.reviews import Reviews
 from unittest import TestCase
 import json
 
-
-
 class BaseTestCase(TestCase):
     """set app config"""
     def setUp(self):
@@ -29,14 +27,14 @@ class BaseTestCase(TestCase):
     
     def register_user(self):
         """Business registration helper"""
-        resp = self.app.post('/api/auth/v1/register', 
+        resp = self.app.post('/api/v1/auth/register', 
         data = json.dumps(self.person), 
         headers = {'content-type': "application/json"})   
         return resp
 
     def login_user(self):
         """User login helper"""
-        resp = self.app.post('/api/v1/login', 
+        resp = self.app.post('/api/v1/auth/login', 
         data = json.dumps(self.person), 
         headers = {'content-type': "application/json"})
         return resp

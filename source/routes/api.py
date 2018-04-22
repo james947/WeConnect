@@ -6,17 +6,24 @@ from passlib.hash import sha256_crypt
 from source.routes import validate
 import datetime
 import re
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+
+
 
 app = Flask(__name__)
 """secret key for encoding ofthe token"""
 app.config['SECRET_KEY'] ="b'd45871881ac4561fb7bf9226e27137708e28c505fc21efb9'"
-"""returns onbject as a dict making json serializable"""
+
+jwt = JWTManager(app)
 
 BUSINESS = []
 USERS = []
 REVIEWS = []
     
-@app.route('/api/auth/v1/register', methods=['POST'])
+@app.route('/api/v1/auth/register', methods=['POST'])
 def create_user():
     """
     creates a new user in the list of users
@@ -42,7 +49,7 @@ def create_user():
     USERS.append(new_user)
     return jsonify({'message':'User successfully registered'}), 201
 
-@app.route('/api/v1/login', methods = ['POST'])
+@app.route('/api/v1/auth/login', methods = ['POST'])
 def login():
     """if request is validated then user is logged in."""
     user_request = request.get_json()
@@ -63,13 +70,13 @@ def login():
         user_login = user_login[0]
         is_user_password = sha256_crypt.verify(str(password), user_login.password)
         if is_user_password and email == user_login.email:
-            session["current_user"] = user_login.email
-            return jsonify({'message':'logged in successfully'}), 200
+            access_token = create_access_token(identity=email)
+            return jsonify(access_token), 200
         return jsonify({'message':'Password not correct'})
     return jsonify({'message':'Email not found'}), 401
 
 
-@app.route('/api/v1/auth/logout')
+@app.route('/api/v1/auth/logout' ,methods=["DELETE"])
 def logout():
     """clears sessions"""
     session.pop('current_user', None)
@@ -94,10 +101,9 @@ def reset_password():
     return jsonify({'message':'Password reset success'})
 
 
-@app.route('/api/v1/auth/users', methods=['GET'])
+@app.route('/api/v1/users', methods=['GET'])
 def get_all_users():
     """returns all the registered users"""
-    # found_user=[{user.id : [user.email,user.username,user.password ] for user in USERS}]
     result = []
     for user in USERS:      
         found_user = {
@@ -176,24 +182,19 @@ def update_by_id(business_id):
     if validate.blank(**dict_data):
         return jsonify(validate.blank(**dict_data)), 401
 
-    business=[business for business in BUSINESS if business.id==business_id]
-    if business:
-        business = business[0]
     available_business = [biz.businessname for biz in BUSINESS]
-
-    if businessname in available_business:
+    business = available_business[0]
+    if businessname in business:
         return jsonify({'message': 'Business already exists'}), 409
-        
-        business.businessname= businessname
-        business.description= description
-        business.category= category
-        business.location= location
-        business = BUSINESS
-        updated_business=[{'business.id' :business.id, 'businessname':business.businessname,
-        'description':business.description,'category':business.category,
-        'location':business.location} for business in BUSINESS]
-        return jsonify(updated_business), 200
-    return jsonify({'message':'Business not found'}), 404
+    business.businessname = businessname
+    print(businessname)
+    business.description = description
+    business.category = category
+    business.location = location
+    updated_business=[{'business.id' :business.id, 'businessname':business.businessname,
+    'description':business.description,'category':business.category,
+    'location':business.location} for business in BUSINESS]
+    return jsonify(updated_business), 200   
 
 @app.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
 def delete_business_by_id(business_id):
