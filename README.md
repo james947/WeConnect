@@ -84,7 +84,7 @@ Built With
 
 Documentation
 ---
-[I'm an inline-style link](https://documenter.getpostman.com/view/4227673/collection/RW1YpLqd)
+[Click! to access the docs](https://documenter.getpostman.com/view/4227673/collection/RW1YpLqd)
 
 Versioning
 ---
