@@ -21,9 +21,9 @@ The users can perform the following functions:
 Prerequisites
 ----
 To run the Api endpoint use either of the following software:
-* Postman
-* Curl
-
+* Postman/Curl - for testing the endpoints
+* Text Editor - Making changes in the code base
+*  Terminal - Run the api file
 Access Endpoints
 ----
 To Access the enpoint follow the directory.
