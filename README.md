@@ -28,13 +28,13 @@ To run the Api endpoint use either of the following software:
 ----
 To Access the enpoint follow the directory.
 - To access the endpoints clone the repo and cd into the following directory
-* cd WeConnect/source/api ```api.py```
+* $ cd WeConnect/source/api ```api.py```
 
 - To access the models
-* cd WeConnect/source/models ```business.py``` ```reviews.py``` ```users.py```
+* $ cd WeConnect/source/models ```business.py``` ```reviews.py``` ```users.py```
 
 - To acess the tests
-* cd WeConnect/tests ```test_business.py``` ```test_reviews.py``` ```test_users.py```
+* $ cd WeConnect/tests ```test_business.py``` ```test_reviews.py``` ```test_users.py```
 
 Api endpoints
 ---
@@ -58,7 +58,7 @@ Api endpoints
 
 Running the API
 ---
-1. To run the API cd into ```cd WeConnect```
+1. To run the API cd into ```$ cd WeConnect```
 2. Create a virtual environment to install your dependencies.
 * ```virtualenv -p python3 venv``` for mac and linux users
 * ```virtualenv venv``` for windows users
@@ -75,7 +75,7 @@ To run the tests assert that the virtual environment is activated:
 
 * Activate virtual env
 * Install pip requirements - ```pip -r requirements.txt```
-* Run nosetests
+* Run the following command in your terminal ```nosetests```
 
 Built With
 ---
@@ -84,7 +84,7 @@ Built With
 
 Documentation
 ---
-You can access the docs weconnect13.docs.apiary.io/#
+[I'm an inline-style link](https://documenter.getpostman.com/view/4227673/collection/RW1YpLqd)
 
 Versioning
 ---
