@@ -24,7 +24,7 @@ To run the Api endpoint use either of the following software:
 * Postman/Curl - Testing the endpoints
 * Text Editor - Making changes in the code base
 *  Terminal - Run the api file
-Access Endpoints
+
 ----
 To Access the enpoint follow the directory.
 - To access the endpoints clone the repo and cd into the following directory
