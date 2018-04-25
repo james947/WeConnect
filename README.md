@@ -27,14 +27,14 @@ To run the Api endpoint use either of the following software:
 Access Endpoints
 ----
 To Access the enpoint follow the directory.
-- To access the endpoints cd into the following directory
-* cd WeConnect/source/api 
+- To access the endpoints clone the repo and cd into the following directory
+* cd WeConnect/source/api ```api.py```
 
 - To access the models
-* cd WeConnect/source/models
+* cd WeConnect/source/models ```business.py``` ```reviews.py``` ```users.py```
 
 - To acess the tests
-* cd WeConnect/tests
+* cd WeConnect/tests ```test_business.py``` ```test_reviews.py``` ```test_users.py```
 
 Api endpoints
 ---
