@@ -12,7 +12,7 @@ class TestUsersTestcase(BaseTestCase):
 
     def test_users_registration_empty_password(self):  
         """tests if registartion password is empty"""
-        response=self.app.post('/api/v1/auth/register',data =json.dumps(dict(username="james", email="jim@gamil.com", password="")), headers={'content-type':"application/json"})
+        response = self.app.post('/api/v1/auth/register', data =json.dumps(dict(username="james", email="jim@gamil.com", password="")), headers={'content-type':"application/json"})
         response_msg = json.loads(response.data.decode())
         self.assertIn('Password is required',response_msg["message"])
 
@@ -23,7 +23,7 @@ class TestUsersTestcase(BaseTestCase):
         headers={'content-type':"application/json"})
         print(response)
         response_msg = json.loads(response.data.decode())
-        self.assertEqual(response.status_code,401)
+        self.assertEqual(response.status_code, 401)
         self.assertIn("Email is required",response_msg["message"])
 
     def test_users_registration_correct_registration(self):
