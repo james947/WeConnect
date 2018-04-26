@@ -4,8 +4,6 @@ from source.models.users import User
 from source.models.reviews import Reviews
 from passlib.hash import sha256_crypt
 from source.api import validate
-import datetime
-import re
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 
 
@@ -22,6 +20,7 @@ jwt = JWTManager(app)
 BUSINESS = []
 USERS = []
 REVIEWS = []
+
 
 blacklist = set()
 
@@ -42,23 +41,23 @@ def create_user():
     password = user.get('password')
     available_emails = [x.email for x in USERS]
     dict_data = {'Email': email, 'Username':username, 'Password':password}
-    
-    msg = validate.key_blank(**dict_data)
-    if msg:
-        return jsonify(msg), 401
-    if validate.key_username(username=dict_data['Username']):
-        return jsonify(validate.key_username(**dict_data))
-    if validate.key_password(password=dict_data['Password']):
-        return jsonify(validate.key_username(**dict_data))
+
+    if validate.key_blank(**dict_data):
+        return jsonify(validate.key_blank(**dict_data)), 401
     if validate.blank(**dict_data):
         return jsonify(validate.blank(**dict_data)), 401
     if validate.email(email):   
         return jsonify(validate.email(email)), 401    
     if email in available_emails:
-        return jsonify({'message': 'Email is already registered'}), 400
+        return jsonify({'message': 'Email is already registered'}), 409
+    if validate.key_password(password):
+        return jsonify(validate.key_password(password))
+    if validate.key_username(username):
+        return jsonify(validate.key_username(username))
 
     password = sha256_crypt.encrypt(str(password))
     new_user = User(username, email, password)
+    print(new_user)
     USERS.append(new_user)
     return jsonify({'message': 'User successfully registered'}), 201
 
@@ -84,9 +83,9 @@ def login():
         if is_user_password and email == user_login.email:
             access_token = create_access_token(identity=email)
             response = {'token': access_token}
-            return jsonify(response), 200
-        return jsonify({'message': 'Password not correct'})
-    return jsonify({'message': 'Email not found'}), 401
+            return jsonify(response), 201
+        return jsonify({'message': 'Password not correct'}), 403
+    return jsonify({'message': '    '}), 404
 
 
 @app.route('/api/v1/auth/logout', methods=["DELETE"])
@@ -100,8 +99,9 @@ def logout():
 @jwt_required
 def reset_password():
     """Resets password"""
-    reset = request.get_json()
-    current_password = reset.get('current_paswword')
+    dict_data = request.get_json()
+    email = reset.get(email)
+    current_password = reset.get('current_password')
     new_password = reset.get('new_password')
     dict_data = {'current_password': current_password, 'new_password': new_password}
 
@@ -110,10 +110,13 @@ def reset_password():
     if validate.blank(**dict_data):
         return jsonify(validate.blank(**dict_data)), 401
     # confirm password
-    get_user = [user for user in USERS if user.password == current_password]
-    found_user = get_user[0]
-    found_user.password = new_password
-    return jsonify({'message': 'Password reset success'})
+    get_user = [user for user in USERS if user.password == dict_data.get('password') 
+    and user.email == dict_data.get('email')]
+    print(get_user)
+    if get_user:
+        get_user.password = new_password
+        return jsonify({'message': 'Password reset success'}), 200
+    return jsonify({'message': 'username or password is invalid'}), 401
 
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -161,7 +164,7 @@ def get_all_businesses():
     """Returns the requested business all the registered businesses"""
     get_business = [business for business in BUSINESS]
     if not get_business:
-            return jsonify({'message':'Business not found'})
+            return jsonify({'message':'Business not found'}), 409
     found_business = [{'businessname': business.businessname, 'description': business.description,
     'category': business.category, 'location': business.location, 'id': business.id } for business in BUSINESS]
     return jsonify(found_business), 200
@@ -242,11 +245,11 @@ def add_review(business_id):
     if validate.blank(**dict_data):
         return jsonify(validate.blank(**dict_data)), 401
         
-    business = [business for business in BUSINESS if business.id==business_id]
+    business = [business for business in BUSINESS if business.id == business_id]
     if business:
         business = business[0] 
         business_id = business.id
-        new_review =Reviews(title,description,business_id)
+        new_review = Reviews(title, description, business_id)
         REVIEWS.append(new_review)
         return jsonify({'message': 'Review Added Successfully'}), 201
     return jsonify({'message': 'Business not found'}), 404
