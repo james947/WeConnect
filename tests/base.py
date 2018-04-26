@@ -18,7 +18,7 @@ class BaseTestCase(TestCase):
         self.person = {
             'username': 'james muriuki',
             'email': 'james20@yahoo.com',
-            'password': '123456'
+            'password': 'james7738'
                     }
 
         self.reviews = {
