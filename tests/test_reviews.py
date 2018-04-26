@@ -59,11 +59,11 @@ class TestIntegrations(BaseTestCase):
         data=json.dumps(dict(title="app", description="yoyo")), content_type="application/json")
         response_msg = json.loads(get_review.data.decode("utf-8"))
         print(response_msg)
-        self.assertIn("yoyo", response_msg.data) 
+        self.assertIn("yoyo", response_msg[0]['description']) 
 
 
 
 
-    
+
 
     
