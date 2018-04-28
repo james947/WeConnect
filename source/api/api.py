@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, abort, request, make_response, json, session
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
+from passlib.hash import sha256_crypt
+
 from source.models.business import Business
 from source.models.users import User
 from source.models.reviews import Reviews
-from passlib.hash import sha256_crypt
 from source.api import validate
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
+
 
 
 app = Flask(__name__)
@@ -29,7 +31,6 @@ def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     return jti in blacklist
 
-    
 @app.route('/api/v1/auth/register', methods=['POST'])
 def create_user():
     """
@@ -85,7 +86,7 @@ def login():
             response = {'token': access_token}
             return jsonify(response), 201
         return jsonify({'message': 'Password not correct'}), 403
-    return jsonify({'message': '    '}), 404
+    return jsonify({'message': 'Email not found'}), 404
 
 
 @app.route('/api/v1/auth/logout', methods=["DELETE"])
@@ -94,6 +95,7 @@ def logout():
     dumps = get_raw_jwt()['jti']
     blacklist.add(dumps)
     return jsonify({"msg": "Successfully logged out"}), 200
+    
 
 @app.route('/api/v1/auth/reset-password', methods=['PUT'])
 @jwt_required

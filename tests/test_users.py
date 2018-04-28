@@ -1,4 +1,5 @@
 from base import BaseTestCase
+
 import json
 
 class TestUsersTestcase(BaseTestCase):
@@ -37,7 +38,7 @@ class TestUsersTestcase(BaseTestCase):
         self.register_user()
         resp = self.login_user()
         data = json.loads(resp.get_data())
-        self.assertIn('token',data)
+        self.assertIn('token', data)
 
 
 
@@ -48,9 +49,9 @@ class TestUsersTestcase(BaseTestCase):
         data=json.dumps(dict(email="james20@yahoo.com", password="555")), 
         content_type="application/json")
         response_msg = json.loads(login.data.decode())
-        self.assertIn("Password not correct",response_msg["message"])
+        self.assertIn("Password not correct", response_msg["message"])
 
-    # def test_login_with_a_wrong_email(self):
+    def test_login_with_a_wrong_email(self):
         """tests if API accepts login with a wrong email"""
         self.register_user()
         login= self.app.post('/api/v1/auth/login',
