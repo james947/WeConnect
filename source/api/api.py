@@ -1,12 +1,11 @@
 from flask import Flask, jsonify, abort, request, make_response, json, session
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_raw_jwt
 from passlib.hash import sha256_crypt
 
 from source.models.business import Business
 from source.models.users import User
 from source.models.reviews import Reviews
 from source.api import validate
-
 
 
 app = Flask(__name__)
@@ -94,14 +93,13 @@ def login():
 def logout():
     dumps = get_raw_jwt()['jti']
     blacklist.add(dumps)
-    return jsonify({"msg": "Successfully logged out"}), 200
-    
+    return jsonify({"msg": "Successfully logged out"}), 200   
 
 @app.route('/api/v1/auth/reset-password', methods=['PUT'])
 @jwt_required
 def reset_password():
     """Resets password"""
-    dict_data = request.get_json()
+    reset = request.get_json()
     email = reset.get(email)
     current_password = reset.get('current_password')
     new_password = reset.get('new_password')
@@ -144,7 +142,7 @@ def register_business():
     description = new_business.get('description')
     category = new_business.get('category')
     location = new_business.get('location')
-    dict_data = {'Businessname': businessname, 'Description': description, 
+    dict_data = {'Businessname': businessname, 'Description': description,
     'Category': category, 'Location': location}
 
     if validate.key_blank(**dict_data):

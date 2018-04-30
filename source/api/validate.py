@@ -10,7 +10,7 @@ def blank(**data):
 
 
 def email(data):
-    vemail = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",data)
+    vemail = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", data)
     if not vemail:
         return {'message': 'Email is invalid'}
 

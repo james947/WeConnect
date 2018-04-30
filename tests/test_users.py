@@ -5,8 +5,8 @@ import json
 class TestUsersTestcase(BaseTestCase):
     """tests for authentication"""
     def test_users_registration_empty_username(self):
-        response=self.app.post('/api/v1/auth/register', 
-        data =json.dumps(dict(username="", email="jim@gamil.com", password="12345")), 
+        response = self.app.post('/api/v1/auth/register',
+        data = json.dumps(dict(username="", email="jim@gamil.com", password="12345")),
         headers={'content-type':"application/json"})
         response_msg = json.loads(response.data.decode())
         self.assertIn("Username is required",response_msg["message"])
