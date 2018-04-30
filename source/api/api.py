@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, abort, request, make_response, json, session
+from flask import Flask, jsonify, request, make_response, json, session
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
-    get_jwt_identity, get_raw_jwt
+    get_raw_jwt
 )
 from passlib.hash import sha256_crypt
 
