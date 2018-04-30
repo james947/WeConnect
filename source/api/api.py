@@ -1,5 +1,8 @@
 from flask import Flask, jsonify, abort, request, make_response, json, session
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_raw_jwt
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity, get_raw_jwt
+)
 from passlib.hash import sha256_crypt
 
 from source.models.business import Business
@@ -10,7 +13,7 @@ from source.api import validate
 
 app = Flask(__name__)
 """secret key for encoding ofthe token"""
-app.config['SECRET_KEY'] ="b'd45871881ac4561fb7bf9226e27137708e28c505fc21efb9'"
+app.config['SECRET_KEY'] = "b'd45871881ac4561fb7bf9226e27137708e28c505fc21efb9'"
 
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
