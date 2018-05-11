@@ -5,10 +5,10 @@ from flask_jwt_extended import (
 )
 from passlib.hash import sha256_crypt
 
-from source.models.business import Business
-from source.models.users import User
-from source.models.reviews import Reviews
-from source.api import validate
+from api.models.business import Business
+from api.models.users import User
+from api.models.reviews import Reviews
+from api.api import validate
 
 
 app = Flask(__name__)

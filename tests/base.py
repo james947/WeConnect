@@ -1,6 +1,6 @@
-from source.api.api import app, BUSINESS, USERS, REVIEWS
-from source.models.business import Business
-from source.models.reviews import Reviews
+from api.api.api import app, BUSINESS, USERS, REVIEWS
+from api.models.business import Business
+from api.models.reviews import Reviews
 from unittest import TestCase
 
 import json
