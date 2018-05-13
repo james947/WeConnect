@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, make_response, json, session
+from flask import Flask, jsonify, request, json, session
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_raw_jwt
