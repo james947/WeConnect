@@ -25,7 +25,7 @@ def register_business(current_user):
         businessname=data.get('businessname')).first()
 
     if not duplicate:
-        new_business = Business(businessname=ata.get('businessname'),
+        new_business = Business(businessname=data.get('businessname'),
                                 description=data.get('description'),
                                 category=data.get('category'), location=data.get('location'), owner_id=current_user.id)
         db.session.add(new_business)

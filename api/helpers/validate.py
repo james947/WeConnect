@@ -1,33 +1,28 @@
 '''Validations'''
 import re
-from api.users import views
+
 
 def blank(**data):
     for key in data:
         name = re.sub(r'\s+', '', data[key])
-        if not name:
-            # return {'message': key + ' is required'}
-            assert 0, key + 'is required'
+        assert 0, key + 'is required'
 
 
 def emails(data):
     vemail = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", data)
     if not vemail:
-        # return {'message': 'Email is invalid'}
         assert 0, 'Email is invalid'
 
 
 def key_blank(**data):
     for key in data:
         if data[key] is None:
-            # return {'message': key + ' is missing'}
             assert 0, key + ' is missing'
 
 
 def key_username(username):
     match = re.match(r'^[a-zA-Z_]+[\d\w]{3,}', username)
     if match is None:
-        # return {'message': 'Username should contain atleast (a-z), (0-4), (-), (_), characters(4)'}
         assert 0, 'Username should contain atleast (a-z), (0-4), (-), (_), characters(4)'
 
 
@@ -61,7 +56,7 @@ def biz_validator(**dict_data):
     category = dict_data.get('category')
     location = dict_data.get('location')
 
-    dict_data_biz = {'businessname':businessname, 'description':description,
+    dict_data= {'businessname':businessname, 'description':description,
     'category':category, 'location':location}
 
     key_blank(**dict_data)
