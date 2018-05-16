@@ -2,10 +2,11 @@
 import re
 
 
-def blank(**data):
+def blank(data):
     for key in data:
         name = re.sub(r'\s+', '', data[key])
-        assert 0, key + 'is required'
+        if not name:
+            assert 0, key + ' is required'
 
 
 def emails(data):
@@ -14,7 +15,7 @@ def emails(data):
         assert 0, 'Email is invalid'
 
 
-def key_blank(**data):
+def key_blank(data):
     for key in data:
         if data[key] is None:
             assert 0, key + ' is missing'
@@ -27,28 +28,28 @@ def key_username(username):
 
 
 def key_password(password):
-    password = re.match(r'[a-zA-Z_]+[\d\w]{8,}', password)
+    password = re.match(r'[a-zA-Z_\d\w]{8,}', password)
     if password is None:
         assert 0, 'password should contain atleast (a-z), (0-4), (-), characters(8)'
 
 
-def validator(**dict_data):
+def validator(dict_data):
     """user data"""
-    password = dict_data.get('password')
+    password = dict_data.get('password')    
     username = dict_data.get('username')
     email = dict_data.get('email')
 
     dict_data = {'password': password, 'username': username, 'email': email}
-    key_blank(**dict_data)
+    key_blank(dict_data)
+    blank(dict_data)
     emails(email)
-    blank(**dict_data)
     key_password(password)
     key_username(username)
 
     return dict_data
 
 
-def biz_validator(**dict_data):
+def biz_validator(dict_data):
 
     """business data"""
     businessname = dict_data.get('businessname')
@@ -59,35 +60,36 @@ def biz_validator(**dict_data):
     dict_data= {'businessname':businessname, 'description':description,
     'category':category, 'location':location}
 
-    key_blank(**dict_data)
-    blank(**dict_data)
+    key_blank(dict_data)
+    blank(dict_data)
 
     return dict_data
 
 
-def login_validator(**dict_data):
+def login_validator(dict_data):
     """user data"""
     password = dict_data.get('password')
-    email = dict_data.get('email')   
+    email = dict_data.get('email')
+
     dict_data = {'password': password, 'email': email}
-    key_blank(**dict_data)
+    key_blank(dict_data)
+    blank(dict_data)
     emails(email)
-    blank(**dict_data)
     key_password(password)
 
     return dict_data
 
 
-def reset_validator(**dict_data):
+def reset_validator(dict_data):
     """user data"""
     current_password = dict_data.get('current_password')
     new_password = dict_data.get('new_password')
     email = dict_data.get('email')  
 
     dict_data = {'current_password': current_password, 'new_password': new_password, 'email': email}
-    key_blank(**dict_data)
+    key_blank(dict_data)
+    blank(dict_data)
     emails(email)
-    blank(**dict_data)
     key_password(password)
 
     return dict_data
