@@ -16,7 +16,7 @@ def register_business(current_user):
     dict_data = request.get_json()
 
     try:
-        data = validate.biz_validator(**dict_data)
+        data = validate.biz_validator(dict_data)
     except AssertionError as error:
         return jsonify({"message": error.args[0]})
 
@@ -56,8 +56,7 @@ def get_all_businesses():
 
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['GET'])
-@token_required
-def get_by_id(current_user, business_id):
+def get_by_id(business_id):
     """Gets a particular business by id"""
     get_business = Business.query.filter_by(id=business_id).first()
     if not get_business:
@@ -140,11 +139,10 @@ def add_review(current_user, id):
 
 
 @biz.route('/api/v1/business/<int:id>/reviews', methods=['GET'])
-@token_required
-def get_all_reviews(current_user, id):
+def get_all_reviews(id):
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
-        get_review = Reviews.query.all()
+        get_review = Reviews.query.filter_by(business_id=id)
         if get_review:
             found_review = []
             for review in get_review:
