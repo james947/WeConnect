@@ -17,7 +17,7 @@ def create_user():
     """creates a new user in the list of users"""
     dict_data = request.get_json()
     try:
-        data = validate.validator(**dict_data)
+        data = validate.validator(dict_data)
     except AssertionError as error:
         return jsonify({"message": error.args[0]})
     available_emails = Users.query.filter_by(email=data['email']).first()
@@ -37,7 +37,7 @@ def login():
     dict_data = request.get_json()
  
     try:
-        data = validate.login_validator(**dict_data)
+        data = validate.login_validator(dict_data)
 
     except AssertionError as error:
         return jsonify({"message": error.args[0]}) 
@@ -72,7 +72,7 @@ def reset_password(current_user):
         
     if current_user.id == available_users.owner_id:
         try:
-            data = validate.reset_validator(**dict_data)
+            data = validate.reset_validator(dict_data)
         except AssertionError as error:
             return jsonify({"message": error.args[0]})
 
