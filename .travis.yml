@@ -10,7 +10,7 @@ services:
 before_script:
   - createdb weconnect_test
 script: 
-  - nosetests --with-coverage --cover-package=source
+  - nosetests --with-coverage
 after_success:
   - coveralls
   - codecov
