@@ -36,22 +36,25 @@ def register_business(current_user):
 @biz.route('/api/v1/business', methods=['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
-    businesses = Business.query.all()
+
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 1, type=int)
+    category = request.args.get('category','', type=str)
+    location = request.args.get('location','', type=str)
+
+
+    businesses = Business.query.paginate(page, limit, False).items
+    
     if not businesses:
         return jsonify({'message': 'No business found'}), 401
     found_business = []
-
-    for business in businesses:
-        obj = {
-            'id': business.id,
-            'businessname': business.businessname,
-            'description': business.description,
-            'category': business.category,
-            'owner': business.owner.username,
-            'created_at': business.date_created,
-            'updated_at': business.date_modified
-        }
-        found_business.append(obj)
+    if category:
+        found_business = [business.obj() for business in businesses if business.category == category]
+        return jsonify(found_business), 200
+    if location:
+        found_business = [business.obj() for business in businesses if business.location == location]
+        return jsonify(found_business), 200
+    found_business = [business.obj() for business in businesses]
     return jsonify(found_business), 200
 
 
