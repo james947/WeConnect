@@ -1,5 +1,6 @@
 import os
 
+
 class BaseConfig(object):
     """Base configuration class."""
     DEBUG = False
@@ -7,9 +8,11 @@ class BaseConfig(object):
     SECRET_KEY = os.getenv('SECRET')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
+
 class DevelopmentConfig(BaseConfig):
     """Configurations for Development."""
     DEBUG = True
+
 
 class TestingConfig(BaseConfig):
     """Configurations for Testing, with a separate test database."""
@@ -17,9 +20,11 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URL')
     DEBUG = True
 
+
 class StagingConfig(BaseConfig):
     """Configurations for Staging."""
     DEBUG = True
+
 
 class ProductionConfig(BaseConfig):
     """Configurations for Production."""
@@ -33,3 +38,4 @@ app_config = {
             'staging': StagingConfig,
             'production': ProductionConfig,
             }
+            
