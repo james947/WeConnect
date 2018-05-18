@@ -5,7 +5,7 @@ import jwt
 import datetime
 import os
 
-from api.baseModel import db
+from api.base_model import db
 from api.users.models import Users
 from api.helpers.token import token_required
 from api.helpers import validate
