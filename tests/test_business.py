@@ -106,3 +106,29 @@ class TestUsersTestcase(BaseTestCase):
             '/api/v1/business/1', headers={"x-access-token": token})
         results = self.client.get('/api/v1/business/1')
         self.assertIn("Business not found", str(results.data))
+
+
+    def test_delete_other_business(self):
+        """tests if a user can delete others users business"""
+        user1 = self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        response = self.client.post('/api/v1/business', data=json.dumps(self.business),
+                                      content_type="application/json", headers={"x-access-token": token})
+        self.person['email'] = 'muthash@gmail.com'
+        user2 = self.register_user()
+        token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        resp = self.client.delete('/api/v1/business/1', data=json.dumps(self.reviews),
+                                  content_type="application/json", headers={"x-access-token": token2})
+        response_msg = json.loads(resp.data.decode())
+        self.assertIn("You can only delete your business", response_msg["message"])
+
+    def test_delete_business_not_registered(self):
+        """test API can delete business"""
+        self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        resp = self.client.post('/api/v1/business',
+                                data=json.dumps(self.business), content_type="application/json",  headers={"x-access-token": token})
+        delete = self.client.delete(
+            '/api/v1/business/2', headers={"x-access-token": token})
+        results = self.client.get('/api/v1/business/2')
+        self.assertIn("Business not found", str(results.data))
