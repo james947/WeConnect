@@ -81,18 +81,5 @@ def reset_password(current_user):
         db.session.commit()
         return jsonify({'message': 'Password reset success'}), 200
     return
-@auth.route('/api/auth/users', methods=['GET'])
-@token_required
-def get_all_users(current_user):
-    """returns all the registered users"""
-    users = Users.query.all()
-    output = []
-    for user in users:
-        user_data = {}
-        user_data['public_id'] = user.public_id
-        user_data['username'] = user.username
-        user_data['email'] = user.email
-        user_data['password'] = user.password
-        output.append(user_data)
-    return jsonify({'users': output}), 200
+
 
