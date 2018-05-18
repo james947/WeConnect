@@ -1,6 +1,6 @@
 from flask import jsonify, request, Blueprint
 
-from api.baseModel import db
+from api.base_model import db
 """import model classes"""
 from api.business.models import Business, Reviews
 from api.helpers.token import token_required
@@ -14,7 +14,6 @@ biz = Blueprint('biz', __name__)
 def register_business(current_user):
     """Registers non existing businesses"""
     dict_data = request.get_json()
-
     try:
         data = validate.biz_validator(dict_data)
     except AssertionError as error:
@@ -41,6 +40,7 @@ def get_all_businesses():
     if not businesses:
         return jsonify({'message': 'No business found'}), 401
     found_business = []
+
     for business in businesses:
         obj = {
             'id': business.id,
@@ -113,24 +113,24 @@ def delete_business_by_id(current_user, business_id):
     return jsonify({'message': 'Business does not exists'}), 409
 
 
-@biz.route('/api/v1/business/<int:id>/review', methods=['POST'])
+@biz.route('/api/v1/business/<int:id>/reviews', methods=['POST'])
 @token_required
 def add_review(current_user, id):
-    new_review = request.get_json()
+    dict_data = request.get_json()
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
 
-        title = new_review['title']
-        review = new_review['review']
+        try:
+            data = validate.review_validator(dict_data)
+        except AssertionError as error:
+            return jsonify({"message": error.args[0]})
+
         business_id = get_business.id
         owner_id = current_user.id
+        if owner_id == get_business.owner_id:
+            return jsonify({'message': 'You cannot review your Business'})
 
-        if title == "":
-            return jsonify({'message': 'Title is required'}), 401
-        elif review == "":
-            return jsonify({'messaage': 'Description is  required'}), 401
-
-        new_review = Reviews(title=title, review=review,
+        new_review = Reviews(title=data.get('title'), review=data.get('review'),
                              business_id=get_business.id, owner_id=current_user.id)
         db.session.add(new_review)
         db.session.commit()
@@ -142,7 +142,9 @@ def add_review(current_user, id):
 def get_all_reviews(id):
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
-        get_review = Reviews.query.filter_by(business_id=id)
+        print(get_business)
+        get_review = Reviews.query.filter_by(business_id=id).all()
+        print(get_review)
         if get_review:
             found_review = []
             for review in get_review:
@@ -153,8 +155,7 @@ def get_all_reviews(id):
                     'created_at': review.date_created,
                     'updated_at': review.date_modified
                 }
-
                 found_review.append(obj)
-                return jsonify(found_review)
-        return jsonify({'message': 'Reviews not found'})
+            return jsonify(found_review)
+        return jsonify({'message': 'Reviews not found'}), 404
     return jsonify({'message': 'Business not found'}), 200
