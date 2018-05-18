@@ -5,83 +5,104 @@ WECONNECT
 [![codecov](https://codecov.io/gh/james947/WeConnect/branch/challenge_3/graph/badge.svg)](https://codecov.io/gh/james947/WeConnect)
 [![Maintainability](https://api.codeclimate.com/v1/badges/89ce316b88ffd4f469f7/maintainability)](https://codeclimate.com/github/james947/WeConnect/maintainability)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
+
 Features
 ===
 The users can perform the following functions:
 
 * Register
 * Login
+* Reset Password
 * Register a business
 * Update business profile
-* Search for a business
-* Filter searches by location and category
+* Get businesses
+* Get business by id
 * Delete a business
 
 Prerequisites
 ----
-This are html pages and can run in any browser that supports html eg.
-* Chrome , internet explorer, Safari e.t.c
-* postman for accessing API endpoints
+To run the Api endpoint use either of the following software:
+* Postman/Curl - Testing the endpoints
+* Text Editor - Making changes in the code base
+*  Terminal - Run the api file
 
-Running the API
----
-Locate the app.py
 ----
+To Access the enpoint follow the directory.
+- To access the endpoints clone the repo and cd into the following directory
+* $ cd WeConnect/source/api ```api.py```
 
-```
-  
-   cd/WeConnect3
-   cd/Weconnect3/routes/api.py
-   Access the endpoints to use on the API with POSTMAN
+- To access the models
+* $ cd WeConnect/source/models ```business.py``` ```reviews.py``` ```users.py```
 
+- To acess the tests
+* $ cd WeConnect/tests ```test_business.py``` ```test_reviews.py``` ```test_users.py```
 
-```
 Api endpoints
 ---
 ```
 1. Users 
-- `POST /api/v1/auth/register` Creates user account
-- `POST /api/v1/auth/login` Log in user
-- `POST /api/v1/auth/logout` Logout user
-- `PUT /api/v1/auth/reset-password` Resets user password
+-  POST /api/v1/auth/register Creates user account
+-  POST /api/v1/auth/login Log in user
+-  POST /api/v1/auth/logout Logout user
+-  PUT /api/v1/auth/reset-password Resets user password
+
 2. Businesses
-- `POST /api/v1/businesses` Register new business
-- `GET /api/v1/businesses` List all available businesses
-- `PUT /api/v1/businesses/<business_id>` Update business 
-- `DELETE /api/v1/businesses/<business_id>` Remove business
+-  POST /api/v1/businesses Register new business
+-  GET /api/v1/businesses List all available businesses
+-  PUT /api/v1/businesses/<business_id> Update business 
+-  DELETE /api/v1/businesses/<business_id> Remove business
+
 3. Reviews
-- `POST /api/v1/businesses/<business_id>/reviews` Review a business
-- `GET /api/v1/businesses/<business_id>/reviews` Get business' reviews
-4. Filter
-- `GET /api/v1/businesses/<business_id>/category/<category>` Search by Category
-- `GET /api/v1/businesses/<business_id>/category/<Location>` Search by Location
+-  POST /api/v1/businesses/<business_id>/reviews Review a business
+-  GET /api/v1/businesses/<business_id>/reviews Get business' reviews
 ```
+
+Running the API
+---
+1. To run the API cd into ```$ cd WeConnect```
+2. Create a virtual environment to install your dependencies.
+* ```virtualenv -p python3 venv``` for mac and linux users
+* ```virtualenv venv``` for windows users
+3. Activate the virtual environment to install dependecies.
+* ```source venv/bin/activate``` for mac and linux users
+* ```source venv/scripts/activate``` for windows users
+4. Install the requirements
+```pip -r requirements.txt``` use the command to install dependecies.(mac,linux,windows)
+5. Finally write the following command in your terminal ```python run.py```
 
 Running tests
 ---
-```
-activate virtual env
-install pip requirements
-pip -r requirements.txt
-run nosetests
-```
+To run the tests assert that the virtual environment is activated:
+
+* Activate virtual env
+* Install pip requirements - ```pip -r requirements.txt```
+* Run the following command in your terminal ```nosetests```
+
 Built With
 ---
-1. HTML /CSS
-2. BOOTSRAP
-3. FLASK
+1. Flask 
+2. Json {}
+
+Documentation
+---
+[Click! to access the docs](https://app.apiary.io/weconnect13/editor)
+
+Versioning
+---
+- Version 0.0.1
 
 Contributing
 ---
-Contributing to the development of this app is allowed just fork it!!!
-Do changes and create a pull request...
+- Contributing to the development of this app is allowed just fork it!!!
+  do changes and create a pull request...
 
 Authors
 ---
 * James Muriuki
 
-
 Acknowledgments
-=== 
+---
 1. Andela kenya
-2. Cohort 25
+2. Flavian 
+3. PMusonye
+4. Georgreen
