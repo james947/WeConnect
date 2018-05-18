@@ -1,6 +1,7 @@
 WECONNECT
 ====
-[![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=challenge_3)](https://coveralls.io/github/james947/WeConnect?branch=master)
+[![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=challenge_3)](https://travis-ci.org/james947/WeConnect)
+[![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=challenge_3&service=github)](https://coveralls.io/github/james947/WeConnect?branch=challenge_3&service=github)
 [![codecov](https://codecov.io/gh/james947/WeConnect/branch/challenge_3/graph/badge.svg)](https://codecov.io/gh/james947/WeConnect)
 [![Maintainability](https://api.codeclimate.com/v1/badges/89ce316b88ffd4f469f7/maintainability)](https://codeclimate.com/github/james947/WeConnect/maintainability)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
