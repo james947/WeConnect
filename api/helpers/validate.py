@@ -10,7 +10,8 @@ def blank(data):
 
 
 def emails(data):
-    vemail = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", data)
+    vemail = re.match(
+        r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", data)
     if not vemail:
         assert 0, 'Email is invalid'
 
@@ -35,7 +36,7 @@ def key_password(password):
 
 def validator(dict_data):
     """user data"""
-    password = dict_data.get('password')    
+    password = dict_data.get('password')
     username = dict_data.get('username')
     email = dict_data.get('email')
 
@@ -50,15 +51,14 @@ def validator(dict_data):
 
 
 def biz_validator(dict_data):
-
     """business data"""
     businessname = dict_data.get('businessname')
     description = dict_data.get('description')
     category = dict_data.get('category')
     location = dict_data.get('location')
 
-    dict_data= {'businessname':businessname, 'description':description,
-    'category':category, 'location':location}
+    dict_data = {'businessname': businessname, 'description': description,
+                 'category': category, 'location': location}
 
     key_blank(dict_data)
     blank(dict_data)
@@ -84,12 +84,26 @@ def reset_validator(dict_data):
     """user data"""
     current_password = dict_data.get('current_password')
     new_password = dict_data.get('new_password')
-    email = dict_data.get('email')  
+    email = dict_data.get('email')
 
-    dict_data = {'current_password': current_password, 'new_password': new_password, 'email': email}
+    dict_data = {'current_password': current_password,
+                 'new_password': new_password, 'email': email}
     key_blank(dict_data)
     blank(dict_data)
     emails(email)
-    key_password(password)
+    key_password(current_password)
+    key_password(new_password)
+
+    return dict_data
+
+
+def review_validator(dict_data):
+    """user data"""
+    title = dict_data.get('title')
+    review = dict_data.get('review')
+
+    dict_data = {'title': title, 'review': review}
+    key_blank(dict_data)
+    blank(dict_data)
 
     return dict_data
