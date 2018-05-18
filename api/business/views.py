@@ -64,19 +64,7 @@ def get_by_id(business_id):
     get_business = Business.query.filter_by(id=business_id).first()
     if not get_business:
         return jsonify({'message': 'Business not found'}), 404
-    found_business = []
-    obj = {
-        'id': get_business.id,
-        'businessname': get_business.businessname,
-        'description': get_business.description,
-        'category': get_business.category,
-        'location': get_business.location,
-        'owner': get_business.owner.username,
-        'created_at': get_business.date_created,
-        'updated_at': get_business.date_modified
-    }
-    found_business.append(obj)
-    return jsonify(found_business), 200
+    return jsonify(get_business.obj()), 200
 
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['PUT'])
