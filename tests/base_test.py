@@ -77,12 +77,6 @@ class BaseTestCase(TestCase):
         )
         return resp
 
-    def new_review(self):
-        """Review Helper"""
-        resp = self.client.post('/api/v1/business/0/review',
-                                data=json.dumps(self.reviews),
-                                headers={'content-type': 'application/json'})
-        return resp
 
     def get_token(self):
         self.register_user()
@@ -108,3 +102,9 @@ class BaseTestCase(TestCase):
             content_type='application/json'
         )
         return resp
+
+    # def tearDown(self):
+    #     """teardown all initialized variables"""
+    #     with self.app.app_context():
+    #         db.session.remove()
+    #         db.drop_all()
