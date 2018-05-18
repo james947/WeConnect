@@ -69,4 +69,34 @@ class TestUsersTestcase(BaseTestCase):
         response_msg = json.loads(resp.data.decode())
         self.assertEqual('Reviews not found', response_msg['message'])
 
+    def test_review_own_business(self):
+        reg = self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        response = self.client.post('/api/v1/business', data=json.dumps(self.business),
+                            content_type="application/json", headers={"x-access-token": token})
+        resp = self.client.post('/api/v1/business/1/reviews', data=json.dumps(self.reviews),
+                            content_type="application/json", headers={"x-access-token": token})
+        response_msg = json.loads(resp.data.decode())
+        self.assertEqual('You cannot review your Business', response_msg['message'])
+
+
+    def test_review_business_not_registered(self):
+        reg = self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        resp = self.client.post('/api/v1/business/1/reviews', data=json.dumps(self.reviews),
+                            content_type="application/json", headers={"x-access-token": token})
+        response_msg = json.loads(resp.data.decode())
+        self.assertEqual('Business not found', response_msg['message'])
+    
+    def test_get_all_reviews_for_business_not_registered(self):
+        reg = self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        resp = self.client.get('/api/v1/business/1/reviews', data=json.dumps(self.reviews),
+                            content_type="application/json", headers={"x-access-token": token})
+        response_msg = json.loads(resp.data.decode())
+        self.assertEqual('Business not found', response_msg['message'])
+
+
+
+
     
