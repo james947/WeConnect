@@ -14,8 +14,6 @@ script:
 after_success:
   - coveralls
   - codecov
-env:
-  - DB=postgres
 notifications:
   slack:
     on_success: never
