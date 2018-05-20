@@ -79,7 +79,5 @@ def reset_password(current_user):
         current_user.password = new_password
         db.session.add(current_user)
         db.session.commit()
-        return jsonify({'message': 'Password reset success'}), 200
-    return
-
+        return jsonify({'message': 'Password reset success'}), 2
 
