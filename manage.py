@@ -4,7 +4,7 @@ from flask_script import Manager # class for handling a set of commands
 from flask_migrate import Migrate, MigrateCommand
 
 from api import create_app
-from api.baseModel import db
+from api.base_model import db
 
 
 app = create_app(config_name=os.getenv('APP_SETTINGS'))
