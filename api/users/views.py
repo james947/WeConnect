@@ -6,7 +6,7 @@ import datetime
 import os
 
 from api.base_model import db
-from api.users.models import Users
+from api.users.models import Users, Blacklist
 from api.helpers.token import token_required
 from api.helpers import validate
 
@@ -49,19 +49,22 @@ def login():
         return jsonify({'message':'Email not found please try again'}), 404
     """checks correct password"""
     if check_password_hash(user.password, data.get('password')):
-        token =jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes =25)}, os.getenv('SECRET'))
+        token =jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)}, os.getenv('SECRET'))
         return jsonify({'token': token.decode('UTF-8')})
     return jsonify({'message': 'Wrong Password'}), 401
 
-@auth.route('/api/auth/logout', methods=['DELETE'])
-def logout():
-    """clears sessions"""
-    if session and session['loggedin']:
-        return jsonify({'message': 'Logged out successfully'}), 200
-    
-@auth.route('/api/v1/auth/reset-password', methods= ['PUT'])
+@auth.route('/api/v1/auth/logout', methods=['DELETE'])
 @token_required
-def reset_password(current_user):
+def logout(current_user=None):
+    """clears sessions""" 
+    token = request.headers.get('x-access-token')
+    blacklist = Blacklist(token)
+    blacklist.save()
+    return jsonify({'message': 'Logged out successfully'}), 200
+    
+@auth.route('/api/v1/auth/change-password', methods= ['PUT'])
+@token_required
+def change_password(current_user):
     """Resets password"""
     dict_data = request.get_json()
 
@@ -76,8 +79,31 @@ def reset_password(current_user):
         except AssertionError as error:
             return jsonify({"message": error.args[0]})
 
-        current_user.password = new_password
+        current_user.password = data.get('password')
         db.session.add(current_user)
         db.session.commit()
-        return jsonify({'message': 'Password reset success'}), 2
+        return jsonify({'message': 'Password reset success'}), 200
+
+
+@auth.route('/api/v1/auth/reset-password', methods= ['PUT'])
+def reset_password():
+    """Resets password"""
+    dict_data = request.get_json()
+
+    available_users = Users.query.filter_by(email=dict_data.get('email')).first()
+    
+    if not available_users:
+        return jsonify({'message': 'Email not found'})
+        
+    if current_user.id == available_users.owner_id:
+        try:
+            data = validate.reset_validator(dict_data)
+        except AssertionError as error:
+            return jsonify({"message": error.args[0]})
+
+        current_user.password = data.get('password')
+        db.session.add(current_user)
+        db.session.commit()
+        return jsonify({'message': 'Password reset success'}), 200
+
 
