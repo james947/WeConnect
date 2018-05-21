@@ -2,6 +2,7 @@ WECONNECT
 ====
 [![Coverage Status](https://coveralls.io/repos/github/james947/WeConnect/badge.svg?branch=challenge_2&service=github)](https://coveralls.io/github/james947/WeConnect?branch=challenge_2&service=github)
 [![Build Status](https://travis-ci.org/james947/WeConnect.svg?branch=challenge_2)](https://travis-ci.org/james947/WeConnect)
+[![Maintainability](https://api.codeclimate.com/v1/badges/89ce316b88ffd4f469f7/maintainability)](https://codeclimate.com/github/james947/WeConnect/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/982f0c5de2f04f318156fb8f9a095e3b)](https://www.codacy.com/app/james947/WeConnect?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=james947/WeConnect&amp;utm_campaign=Badge_Grade)
 ![Imgur](https://i.imgur.com/urrmxwS.png)
 
