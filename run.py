@@ -1,4 +1,4 @@
-from api.api.api import app#import app from source folder
+from app.api.api import app#import app from source folder
 
 
 #starts the app
