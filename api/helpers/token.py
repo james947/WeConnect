@@ -27,7 +27,7 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-  
+
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
 
@@ -40,11 +40,11 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, os.getenv('SECRET'))
-            current_user = Users.query.filter_by(public_id=data['public_id']).first()
+            current_user = Users.query.filter_by(
+                public_id=data['public_id']).first()
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 
         return f(current_user=current_user, *args, **kwargs)
 
     return decorated
-
