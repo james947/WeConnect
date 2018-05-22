@@ -98,42 +98,7 @@ def logout():
     blacklist.add(dumps)
     return jsonify({"msg": "Successfully logged out"}), 200   
 
-@app.route('/api/v1/auth/reset-password', methods=['PUT'])
-@jwt_required
-def reset_password():
-    """Resets password"""
-    reset = request.get_json()
-    email = reset.get(email)
-    current_password = reset.get('current_password')
-    new_password = reset.get('new_password')
-    dict_data = {'current_password': current_password, 'new_password': new_password}
 
-    if validate.key_blank(**dict_data):
-        return jsonify(validate.key_blank(**dict_data)), 401
-    if validate.blank(**dict_data):
-        return jsonify(validate.blank(**dict_data)), 401
-    # confirm password
-    get_user = [user for user in USERS if user.password == dict_data.get('password') 
-    and user.email == dict_data.get('email')]
-    print(get_user)
-    if get_user:
-        get_user.password = new_password
-        return jsonify({'message': 'Password reset success'}), 200
-    return jsonify({'message': 'username or password is invalid'}), 401
-
-
-@app.route('/api/v1/users', methods=['GET'])
-def get_all_users():
-    """returns all the registered users"""
-    result = []
-    for user in USERS:      
-        found_user = {
-            'user_id': user.id,
-            'email': user.email,
-            'user_name': user.username
-            }
-        result.append(found_user)
-    return jsonify(result)
 
 
 @app.route('/api/v1/business', methods=['POST'])
