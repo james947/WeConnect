@@ -1,4 +1,6 @@
 import json
+import datetime
+
 from .base_test import BaseTestCase
 
 
@@ -13,11 +15,13 @@ class TestUsersTestcase(BaseTestCase):
     def test_register_business_with_invalid_token(self):
         """tests empty with invalid token"""
         self.register_user()
-        data = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/business',
-                                data=json.dumps(dict(businessname="Ramtoms", description="sell iron boxes", category="electronics", location="juja")), content_type="application/json",  headers={"x-access-token": 'hdind'})
+                                data=json.dumps(dict(businessname="Ramtoms",
+                                                     description="sell iron boxes", category="electronics", location="juja")),
+                                content_type="application/json",  headers={"x-access-token": '99'})
         response = json.loads(resp.data.decode())
-        self.assertIn("Token is invalid!", response['message'])
+        self.assertIn("Invalid Token Please refresh", response['message'])
 
     def test_business_registration(self):
         """tests successful registration"""
@@ -107,20 +111,20 @@ class TestUsersTestcase(BaseTestCase):
         results = self.client.get('/api/v1/business/1')
         self.assertIn("Business not found", str(results.data))
 
-
     def test_delete_other_business(self):
         """tests if a user can delete others users business"""
         user1 = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/business', data=json.dumps(self.business),
-                                      content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"x-access-token": token})
         self.person['email'] = 'muthash@gmail.com'
         user2 = self.register_user()
         token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.delete('/api/v1/business/1', data=json.dumps(self.reviews),
                                   content_type="application/json", headers={"x-access-token": token2})
         response_msg = json.loads(resp.data.decode())
-        self.assertIn("You can only delete your business", response_msg["message"])
+        self.assertIn("You can only delete your business",
+                      response_msg["message"])
 
     def test_delete_business_not_registered(self):
         """test API can delete business"""
@@ -138,4 +142,3 @@ class TestUsersTestcase(BaseTestCase):
         response = self.business_registration()
         results = self.client.get('/api/v1/businesses?search=T')
         self.assertIn("Techbase", str(results.data))
-
