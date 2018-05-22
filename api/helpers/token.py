@@ -18,8 +18,13 @@ def validate_token(token):
         print(payload)
         return "Valid token", isError
     except jwt.ExpiredSignatureError:
+
         isError = True
         return 'Token expired. Please log in again', isError
+    except (jwt.InvalidTokenError, jwt.DecodeError):
+
+        isError = True
+        return 'Invalid Token Please refresh', isError
 
 
 def token_required(f):
@@ -42,9 +47,8 @@ def token_required(f):
             data = jwt.decode(token, os.getenv('SECRET'))
             current_user = Users.query.filter_by(
                 public_id=data['public_id']).first()
-        except:
+        except jwt.InvalidTokenError:
             return jsonify({'message': 'Token is invalid!'}), 401
-
         return f(current_user=current_user, *args, **kwargs)
 
     return decorated
