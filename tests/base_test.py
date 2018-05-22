@@ -43,14 +43,12 @@ class BaseTestCase(TestCase):
                                 headers={'content-type': "application/json"})
         return resp
 
-
     def login_user(self):
         """User login helper"""
         resp = self.client.post('/api/v1/auth/login',
                                 data=json.dumps(self.person),
                                 headers={'content-type': "application/json"})
         return resp
-
 
     def get_access_token(self):
         self.register_user()
@@ -77,7 +75,6 @@ class BaseTestCase(TestCase):
         )
         return resp
 
-
     def get_token(self):
         self.register_user()
         data = json.loads(self.login_user().data.decode("UTF-8"))['token']
@@ -102,9 +99,3 @@ class BaseTestCase(TestCase):
             content_type='application/json'
         )
         return resp
-
-    # def tearDown(self):
-    #     """teardown all initialized variables"""
-    #     with self.app.app_context():
-    #         db.session.remove()
-    #         db.drop_all()
