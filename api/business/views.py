@@ -25,7 +25,8 @@ def register_business(current_user):
     if not duplicate:
         new_business = Business(businessname=data.get('businessname'),
                                 description=data.get('description'),
-                                category=data.get('category'), location=data.get('location'), owner_id=current_user.id)
+                                category=data.get('category'), location=data.get('location'), 
+                                owner_id=current_user.id)
         db.session.add(new_business)
         db.session.commit()
         return jsonify({'message': 'Business successfully registered'}), 201
