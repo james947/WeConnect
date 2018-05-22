@@ -116,3 +116,9 @@ class TestUsersTestcase(BaseTestCase):
         response = self.client.post('/api/v1/auth/reset-password', data = json.dumps(dict(email="james20@yahoo.com")), headers={'content-type': "application/json"})
         response_msg=json.loads(response.data.decode("UTF-8"))
         self.assertIn("Non-existent email. Try signing up", response_msg["message"])
+
+    def user_logout(self):
+        self.register_user()
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        logout = self.client.delete('/api/v1/auth/logout', data = json.dumps(dict(email="james20@yahoo.com")), headers={"x-access-token": token})
+        self.assertIn("Logged out successfully", logout["message"])
