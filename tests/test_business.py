@@ -29,7 +29,7 @@ class TestUsersTestcase(BaseTestCase):
     def test_returns_all_businesses(self):
         """test all businesses are returned"""
         response = self.business_registration()
-        resp = self.client.get('/api/v1/business',
+        resp = self.client.get('/api/v1/businesses',
                                content_type="application/json")
         self.assertIn("Techbase", str(resp.data))
 
@@ -132,3 +132,10 @@ class TestUsersTestcase(BaseTestCase):
             '/api/v1/business/2', headers={"x-access-token": token})
         results = self.client.get('/api/v1/business/2')
         self.assertIn("Business not found", str(results.data))
+
+    def test_search_business(self):
+        """Test search business"""
+        response = self.business_registration()
+        results = self.client.get('/api/v1/businesses?search=T')
+        self.assertIn("Techbase", str(results.data))
+
