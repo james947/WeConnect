@@ -59,7 +59,7 @@ def login():
     """checks correct password"""
     if check_password_hash(user.password, data.get('password')):
         token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow(
-        ) + datetime.timedelta(seconds=1)}, os.getenv('SECRET'))
+        ) + datetime.timedelta(hours=24)}, os.getenv('SECRET'))
         return jsonify({'token': token.decode('UTF-8')})
     return jsonify({'message': 'Wrong Password'}), 401
 
