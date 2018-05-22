@@ -16,20 +16,18 @@ class Business(db.Model):
 
     reviews = db.relationship('Reviews', backref='business', lazy='dynamic')
 
-
-
     def obj(self):
 
-        return  {
-                    'id': self.id,
-                    'businessname': self.businessname,
-                    'description': self.description,
-                    'category': self.category,
-                    'location': self.location,
-                    'owner': self.owner.username,
-                    'created_at': self.date_created,
-                    'updated_at':self.date_modified
-                }
+        return {
+            'id': self.id,
+            'businessname': self.businessname,
+            'description': self.description,
+            'category': self.category,
+            'location': self.location,
+            'owner': self.owner.username,
+            'created_at': self.date_created,
+            'updated_at': self.date_modified
+        }
 
 
 class Reviews(db.Model):
