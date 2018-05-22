@@ -74,7 +74,7 @@ def logout(current_user=None):
     return jsonify({'message': 'Logged out successfully'}), 200
 
 
-@auth.route('/api/v1/auth/change-password', methods=['PUT'])
+@auth.route('/api/v1/auth/change-password', methods=['POST'])
 @token_required
 def change_password(current_user):
     """Resets password"""
