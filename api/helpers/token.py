@@ -15,6 +15,7 @@ def validate_token(token):
 
     try:
         payload = jwt.decode(token, os.getenv('SECRET'))
+        print(payload)
         return "Valid token", isError
     except jwt.ExpiredSignatureError:
         isError = True
