@@ -54,9 +54,9 @@ class TestUsersTestcase(BaseTestCase):
     def test_add_empty_business_name(self):
         """tests empty business name"""
         self.register_user()
-        data = json.loads(self.login_user().data.decode("UTF-8"))['token']
+        token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/business', data=json.dumps(
-            self.business2), content_type="application/json", headers={"x-access-token": data})
+            self.business2), content_type="application/json", headers={"x-access-token": token})
         response_msg = json.loads(response.data.decode())
         self.assertIn("businessname is required", response_msg['message'])
 
