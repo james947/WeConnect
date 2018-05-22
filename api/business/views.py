@@ -1,7 +1,6 @@
 from flask import jsonify, request, Blueprint
 
 from api.base_model import db
-"""import model classes"""
 from api.business.models import Business, Reviews
 from api.helpers.token import token_required
 from api.helpers import validate
@@ -33,47 +32,34 @@ def register_business(current_user):
     return jsonify({'message': 'Business already exists'}), 409
 
 
-@biz.route('/api/v1/business', methods=['GET'])
+@biz.route('/api/v1/businesses', methods=['GET'])
 def get_all_businesses():
     """Returns the requested business all the registered businesses"""
 
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 5, type=int)
-    category = request.args.get('category','', type=str)
-    location = request.args.get('location','', type=str)
+    category = request.args.get('category', '', type=str)
+    location = request.args.get('location', '', type=str)
+    search = request.args.get('q', '', type=str)
 
-    businesses = Business.query.paginate(page, limit, False).items
-    
+    businesses = Business.query.filter(Business.businessname.ilike(
+    '%' + search + '%')).paginate(page, limit, False).items
+    # businesses = Business.query.paginate(page, limit, False).items
+
     if not businesses:
         return jsonify({'message': 'No business found'}), 401
     found_business = []
     if category:
-        found_business = [business.obj() for business in businesses if business.category == category]
+        found_business = [business.obj()
+                          for business in businesses if business.category == category]
         return jsonify(found_business), 200
     if location:
-        found_business = [business.obj() for business in businesses if business.location == location]
+        found_business = [business.obj()
+                          for business in businesses if business.location == location]
         return jsonify(found_business), 200
     found_business = [business.obj() for business in businesses]
-    return jsonify(found_business), 200
-
-@biz.route('/api/v1/businesses', methods=['GET'])
-def search():
-    """Returns the requested business all the registered businesses"""
-
-    page = request.args.get('page', 1, type=int)
-    limit = request.args.get('limit', 5, type=int)
-
-    search = request.args.get('search', '', type=str)
-
-    businesses = Business.query.filter(Business.businessname.ilike('%' + search + '%')).paginate(page, limit, False).items
     
-    if not businesses:
-        return jsonify({'message': 'No business found'}), 401
-    found_business = []
-    found_business = [business.obj() for business in businesses]
-  
     return jsonify(found_business), 200
-
 
 @biz.route('/api/v1/business/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
@@ -83,10 +69,10 @@ def get_by_id(business_id):
         return jsonify({'message': 'Business not found'}), 404
     return jsonify(get_business.obj()), 200
 
+
 @biz.route('/api/v1/business/<int:business_id>', methods=['PUT'])
 @token_required
 def update_by_id(current_user, business_id):
-    """"updates business by id"""
     get_business = Business.query.filter_by(id=business_id).first()
     if get_business:
         if current_user.id == get_business.owner_id:
