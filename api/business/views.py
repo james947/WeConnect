@@ -41,26 +41,29 @@ def get_all_businesses():
     limit = request.args.get('limit', 5, type=int)
     category = request.args.get('category', '', type=str)
     location = request.args.get('location', '', type=str)
-    print(location)
     search = request.args.get('q', '', type=str)
 
-    businesses =None
-    filters = request.args
-    for filter in filters:
-        if filter == "category":
-            _operator = category 
-        elif filter == "location":
-            _operator = location 
-        else:
-            _operator = search
-        businesses = Business.query.filter(getattr(Business, filter).ilike(
-                '%' + _operator + '%')).paginate(page, limit, False).items
-    
-    if not businesses:
-        return jsonify({'message': 'No business found'}), 401
+    subquery = Business.query
+    filter_params = request.args
 
+    for filter in filter_params:
+        valid_filters = ("category", "location", "q")
+        if filter not in valid_filters:
+            continue
+        if filter == valid_filters[0]:
+            _operator =category   
+        elif filter ==valid_filters[1]:
+            _operator =location 
+        elif filter == valid_filters[2]:
+            filter = "businessname"
+            _operator = search
+        
+        subquery = subquery.filter(getattr(Business, filter).ilike(
+                '%' + _operator + '%'))
+
+    businesses = subquery.paginate(page, limit, False).items
     found_businesses = [business.obj() for business in businesses]
-    return jsonify(found_businesses), 200
+    return jsonify({"results": found_businesses}), 200
 
 
 @biz.route('/api/v1/businesses/<int:business_id>', methods=['GET'])
