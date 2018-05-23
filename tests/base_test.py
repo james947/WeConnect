@@ -68,7 +68,7 @@ class BaseTestCase(TestCase):
             "location": "River road"
         }
         resp = self.client.post(
-            '/api/v1/business',
+            '/api/v1/businesses',
             headers={'x-access-token': token},
             data=json.dumps(business),
             content_type='application/json'
@@ -78,7 +78,7 @@ class BaseTestCase(TestCase):
     def get_token(self):
         self.register_user()
         data = json.loads(self.login_user().data.decode("UTF-8"))['token']
-        resp = self.client.post('/api/v1/business',
+        resp = self.client.post('/api/v1/businesses',
                                 data=json.dumps(self.business),
                                 headers={"x-access-token": data})
 
@@ -93,7 +93,7 @@ class BaseTestCase(TestCase):
             "location": "River road"
         }
         resp = self.client.post(
-            '/api/v1/business',
+            '/api/v1/businesses',
             headers={'x-access-token': ''},
             data=json.dumps(business),
             content_type='application/json'

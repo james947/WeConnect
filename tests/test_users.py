@@ -75,8 +75,9 @@ class TestUsersTestcase(BaseTestCase):
         "tests if an empty space is passed"
         self.register_user()
         response = self.client.post('/api/v1/auth/login',
-        data=json.dumps(dict(email="   ", password="james7738")),
-        headers={'content-type': "application/json"})
+                                    data=json.dumps(
+                                        dict(email="   ", password="james7738")),
+                                    headers={'content-type': "application/json"})
         response_msg = json.loads(response.data.decode())
         self.assertIn("email is required", response_msg["message"])
 
@@ -84,8 +85,9 @@ class TestUsersTestcase(BaseTestCase):
         "tests if an empty space is passed"
         self.register_user()
         response = self.client.post('/api/v1/auth/login',
-        data=json.dumps(dict(email="james20@yahoo.com", password="    ")),
-        headers={'content-type': "application/json"})
+                                    data=json.dumps(
+                                        dict(email="james20@yahoo.com", password="    ")),
+                                    headers={'content-type': "application/json"})
         response_msg = json.loads(response.data.decode())
         self.assertIn("password is required", response_msg["message"])
 
@@ -96,29 +98,26 @@ class TestUsersTestcase(BaseTestCase):
         response_msg = json.loads(response.data.decode("UTF-8"))
         self.assertIn("Email is invalid", response_msg["message"])
 
-    # def test_change_password_with_wrong_email(self):
-    #     """checks if email passed is wrong"""
-    #     self.register_user()
-    #     token = json.loads(self.login_user().data.decode("UTF-8"))['token']
-    #     response = self.client.post('/api/v1/auth/change-password', data=json.dumps(dict(email="james@gmail", password='12')), headers={"x-access-token":token})
-    #     response_msg=json.loads(response.data.decode("UTF-8"))
-    #     self.assertIn("Email is invalid", response_msg["message"])
-
     def test_reset_password(self):
         """"tests successful password reset"""
         self.register_user()
-        response = self.client.post('/api/v1/auth/reset-password', data = json.dumps(dict(email="james20@yahoo.com")), headers={'content-type': "application/json"})
-        response_msg=json.loads(response.data.decode("UTF-8"))
-        self.assertIn("An email has been sent with your new password!", response_msg["message"])
+        response = self.client.post('/api/v1/auth/reset-password', data=json.dumps(
+            dict(email="james20@yahoo.com")), headers={'content-type': "application/json"})
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn(
+            "An email has been sent with your new password!", response_msg["message"])
 
     def test_reset_password_with_non_existent_email(self):
         """tests if email is existent"""
-        response = self.client.post('/api/v1/auth/reset-password', data = json.dumps(dict(email="james20@yahoo.com")), headers={'content-type': "application/json"})
-        response_msg=json.loads(response.data.decode("UTF-8"))
-        self.assertIn("Non-existent email. Try signing up", response_msg["message"])
+        response = self.client.post('/api/v1/auth/reset-password', data=json.dumps(
+            dict(email="james20@yahoo.com")), headers={'content-type': "application/json"})
+        response_msg = json.loads(response.data.decode("UTF-8"))
+        self.assertIn("Non-existent email. Try signing up",
+                      response_msg["message"])
 
     def user_logout(self):
         self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
-        logout = self.client.delete('/api/v1/auth/logout', data = json.dumps(dict(email="james20@yahoo.com")), headers={"x-access-token": token})
-        self.assertIn("Logged out successfully", logout["message"])
+        logout = self.client.delete('/api/v1/auth/logout', data=json.dumps(
+            dict(email="james20@yahoo.com")), headers={"x-access-token": token})
+        self.assertIn("Logged out successully", logout["message"])

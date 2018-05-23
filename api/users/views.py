@@ -12,7 +12,6 @@ from api.base_model import db
 from api.users.models import Users, Blacklist
 from api.helpers.token import token_required
 from api.helpers import validate
-from api import create_app
 
 
 auth = Blueprint('auth', __name__)

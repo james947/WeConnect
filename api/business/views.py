@@ -8,7 +8,7 @@ from api.helpers import validate
 biz = Blueprint('biz', __name__)
 
 
-@biz.route('/api/v1/business', methods=['POST'])
+@biz.route('/api/v1/businesses', methods=['POST'])
 @token_required
 def register_business(current_user):
     """Registers non existing businesses"""
@@ -25,7 +25,7 @@ def register_business(current_user):
     if not duplicate:
         new_business = Business(businessname=data.get('businessname'),
                                 description=data.get('description'),
-                                category=data.get('category'), location=data.get('location'), 
+                                category=data.get('category'), location=data.get('location'),
                                 owner_id=current_user.id)
         db.session.add(new_business)
         db.session.commit()
@@ -44,7 +44,7 @@ def get_all_businesses():
     search = request.args.get('q', '', type=str)
 
     businesses = Business.query.filter(Business.businessname.ilike(
-    '%' + search + '%')).paginate(page, limit, False).items
+        '%' + search + '%')).paginate(page, limit, False).items
     # businesses = Business.query.paginate(page, limit, False).items
 
     if not businesses:
@@ -59,10 +59,11 @@ def get_all_businesses():
                           for business in businesses if business.location == location]
         return jsonify(found_business), 200
     found_business = [business.obj() for business in businesses]
-    
+
     return jsonify(found_business), 200
 
-@biz.route('/api/v1/business/<int:business_id>', methods=['GET'])
+
+@biz.route('/api/v1/businesses/<int:business_id>', methods=['GET'])
 def get_by_id(business_id):
     """Gets a particular business by id"""
     get_business = Business.query.filter_by(id=business_id).first()
@@ -71,7 +72,7 @@ def get_by_id(business_id):
     return jsonify(get_business.obj()), 200
 
 
-@biz.route('/api/v1/business/<int:business_id>', methods=['PUT'])
+@biz.route('/api/v1/businesses/<int:business_id>', methods=['PUT'])
 @token_required
 def update_by_id(current_user, business_id):
     get_business = Business.query.filter_by(id=business_id).first()
@@ -92,7 +93,7 @@ def update_by_id(current_user, business_id):
     return jsonify({'message': 'Business does not exists'}), 404
 
 
-@biz.route('/api/v1/business/<int:business_id>', methods=['DELETE'])
+@biz.route('/api/v1/businesses/<int:business_id>', methods=['DELETE'])
 @token_required
 def delete_business_by_id(current_user, business_id):
     """Endpoint for deleting requested business by id"""
@@ -106,7 +107,7 @@ def delete_business_by_id(current_user, business_id):
     return jsonify({'message': 'Business does not exists'}), 409
 
 
-@biz.route('/api/v1/business/<int:id>/reviews', methods=['POST'])
+@biz.route('/api/v1/businesses/<int:id>/reviews', methods=['POST'])
 @token_required
 def add_review(current_user, id):
     dict_data = request.get_json()
@@ -131,7 +132,7 @@ def add_review(current_user, id):
     return jsonify({'message': 'Business not found'}), 201
 
 
-@biz.route('/api/v1/business/<int:id>/reviews', methods=['GET'])
+@biz.route('/api/v1/businesses/<int:id>/reviews', methods=['GET'])
 def get_all_reviews(id):
     get_business = Business.query.filter_by(id=id).first()
     if get_business:
