@@ -55,6 +55,19 @@ Api endpoints
 3. Reviews
 -  POST /api/v1/businesses/<business_id>/reviews Review a business
 -  GET /api/v1/businesses/<business_id>/reviews Get business' reviews
+
+4. Pagination and Limit
+-  POST /api/v1/businesses Add new business
+-  GET /api/v1/businesses?page=?&limit=?
+
+5. Filter by categeory or location
+-  POST /api/v1/businesses Post a business
+-  GET /api/v1/businesses?category=?&location=? add category and location
+
+6. Search Business
+-  POST /api/v1/businesses Add new business
+-  GET /api/v1/businesses?q=? Add business of choice
+
 ```
 
 Running the API
