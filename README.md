@@ -60,7 +60,7 @@ Api endpoints
 -  POST /api/v1/businesses Add new business
 -  GET /api/v1/businesses?page=?&limit=?
 
-5. Filter by categeory or location
+5. Filter by category or location
 -  POST /api/v1/businesses Post a business
 -  GET /api/v1/businesses?category=?&location=? add category and location
 
