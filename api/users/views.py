@@ -85,7 +85,7 @@ def change_password(current_user):
     if not available_users:
         return jsonify({'message': 'Email not found'})
 
-    if current_user.id == available_users.owner_id:
+    if current_user.id == available_users.id:
         try:
             data = validate.reset_validator(dict_data)
         except AssertionError as error:
