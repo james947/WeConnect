@@ -91,8 +91,7 @@ def change_password(current_user):
         except AssertionError as error:
             return jsonify({"message": error.args[0]})
 
-        current_user.password = data.get('password')
-        db.session.add(current_user)
+        current_user.password = generate_password_hash(password=data.get('new_password'), method='sha256')
         db.session.commit()
         return jsonify({'message': 'Password reset success'}), 200
 
