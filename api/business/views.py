@@ -50,17 +50,17 @@ def get_all_businesses():
         valid_filters = ("category", "location", "q")
         if filter not in valid_filters:
             continue
-        if filter == valid_filters[0]:
-            _operator =category   
-        elif filter ==valid_filters[1]:
-            _operator =location 
-        elif filter == valid_filters[2]:
+        if filter == "category":
+            operator = category
+        elif filter == "location":
+            operator = location
+        elif filter == "q":
             filter = "businessname"
-            _operator = search
-        
-        subquery = subquery.filter(getattr(Business, filter).ilike(
-                '%' + _operator + '%'))
+            operator = search
 
+        subquery = subquery.filter(getattr(Business, filter).ilike(
+            '%' + operator + '%'))
+    
     businesses = subquery.paginate(page, limit, False).items
     found_businesses = [business.obj() for business in businesses]
     return jsonify({"results": found_businesses}), 200
@@ -78,29 +78,36 @@ def get_by_id(business_id):
 @biz.route('/api/v1/businesses/<int:business_id>', methods=['PUT'])
 @token_required
 def update_by_id(current_user, business_id):
+    dict_data = request.get_json()
+    try:
+        data = validate.update_validator(dict_data)
+    except AssertionError as error:
+        return jsonify({"message": error.args[0]})
+
+    check_duplication = Business.query.filter_by(businessname=data.get('businessname')).first()
+    if check_duplication:
+       return jsonify({'message': 'Business already exist'}), 409
+
     get_business = Business.query.filter_by(id=business_id).first()
-    if get_business:
-        if current_user.id == get_business.owner_id:
-            duplicate = Business.query.filter_by(
-                businessname=get_business.businessname).first()
-            if duplicate:
-                get_business.businessname = request.json['businessname']
-                get_business.description = request.json['description']
-                get_business.category = request.json['category']
-                get_business.location = request.json['location']
-                db.session.add(get_business)
-                db.session.commit()
-                return jsonify({'message': 'Business successfully updated'}), 200
-            return jsonify({'message': 'Business already exists'}), 409
-        return jsonify({'message': 'You can only Update your business'}), 409
-    return jsonify({'message': 'Business does not exists'}), 404
+   
+    if current_user.id != get_business.owner_id:
+        return jsonify({'message': 'You can only update your business'}), 404
+    if not get_business:
+        return jsonify({'message': 'Business does not exist'}), 200
+
+    for key in data.keys():
+        value = data[key]
+        setattr(get_business, key, value)
+    db.session.commit()
+    return jsonify({'message': 'Business successfully updated'}), 200
+
 
 
 @biz.route('/api/v1/businesses/<int:business_id>', methods=['DELETE'])
 @token_required
 def delete_business_by_id(current_user, business_id):
     """Endpoint for deleting requested business by id"""
-    get_business = Business.query.filter_by(id=business_id).first()
+    get_business=Business.query.filter_by(id=business_id).first()
     if get_business:
         if current_user.id == get_business.owner.id:
             db.session.delete(get_business)
@@ -113,21 +120,21 @@ def delete_business_by_id(current_user, business_id):
 @biz.route('/api/v1/businesses/<int:id>/reviews', methods=['POST'])
 @token_required
 def add_review(current_user, id):
-    dict_data = request.get_json()
-    get_business = Business.query.filter_by(id=id).first()
+    dict_data=request.get_json()
+    get_business=Business.query.filter_by(id=id).first()
     if get_business:
 
         try:
-            data = validate.review_validator(dict_data)
+            data=validate.review_validator(dict_data)
         except AssertionError as error:
             return jsonify({"message": error.args[0]})
 
-        business_id = get_business.id
-        owner_id = current_user.id
+        business_id=get_business.id
+        owner_id=current_user.id
         if owner_id == get_business.owner_id:
             return jsonify({'message': 'You cannot review your Business'})
 
-        new_review = Reviews(title=data.get('title'), review=data.get('review'),
+        new_review=Reviews(title=data.get('title'), review=data.get('review'),
                              business_id=get_business.id, owner_id=current_user.id)
         db.session.add(new_review)
         db.session.commit()
@@ -137,13 +144,13 @@ def add_review(current_user, id):
 
 @biz.route('/api/v1/businesses/<int:id>/reviews', methods=['GET'])
 def get_all_reviews(id):
-    get_business = Business.query.filter_by(id=id).first()
+    get_business=Business.query.filter_by(id=id).first()
     if get_business:
-        get_review = Reviews.query.filter_by(business_id=id).all()
+        get_review=Reviews.query.filter_by(business_id=id).all()
         if get_review:
-            found_review = []
+            found_review=[]
             for review in get_review:
-                obj = {
+                obj={
                     'title': review.title,
                     'review': review.review,
                     'reviewer': review.reviewer.username,
