@@ -107,3 +107,17 @@ def review_validator(dict_data):
     blank(dict_data)
 
     return dict_data
+
+
+def update_validator(dict_data):
+    """business data"""
+    update_fields = ['businessname','description','category','location']
+    update_dict = {}
+    for key in dict_data.keys():
+        if key in update_fields:
+            update_dict[key] = dict_data[key]
+    
+
+    blank(update_dict)
+
+    return update_dict
