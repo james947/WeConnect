@@ -6,25 +6,22 @@ from flask import Flask, jsonify, abort, request, make_response, json, session, 
 
 
 def validate_token(token):
-    isError = False
+    is_error = False
 
     check_token = Blacklist.query.filter_by(token=token).first()
     if check_token:
-        isError = True
-        return "Token Blacklisted", isError
+        is_error = True
+        return "Token Blacklisted", is_error
 
     try:
         payload = jwt.decode(token, os.getenv('SECRET'))
-        print(payload)
-        return "Valid token", isError
+        return "Valid token", is_error
     except jwt.ExpiredSignatureError:
-
-        isError = True
-        return 'Token expired. Please log in again', isError
+        is_error = True
+        return 'Token expired. Please log in again', is_error
     except (jwt.InvalidTokenError, jwt.DecodeError):
-
-        isError = True
-        return 'Invalid Token Please refresh', isError
+        is_error = True
+        return 'Invalid Token Please refresh', is_error
 
 
 def token_required(f):
@@ -39,8 +36,8 @@ def token_required(f):
         if not token:
             return jsonify({'message': 'Token is required'}), 401
 
-        message, isError = validate_token(token)
-        if isError:
+        message, is_error = validate_token(token)
+        if is_error:
             return jsonify({"message": message}), 401
 
         try:
