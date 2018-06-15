@@ -1,6 +1,7 @@
 from flask_api import FlaskAPI
 from flask_mail import Mail
 import os
+from flask_cors import CORS
 
 
 from instance.config import app_config
@@ -30,7 +31,7 @@ def create_app(config_name):
     from api.users.views import auth
     app.register_blueprint(biz)
     app.register_blueprint(auth)
-     
+    CORS(app)
     return app
 
 
