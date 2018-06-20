@@ -1,0 +1,23 @@
+language: python
+python :
+  - "3.6"
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install codecov
+services:
+  - postgresql
+before_script:
+  - createdb weconnect_test
+script: 
+  - nosetests --with-coverage
+after_success:
+  - coveralls
+  - codecov
+notifications:
+  slack:
+    on_success: never
+    on_failure: never
+  email: false
+
+  
