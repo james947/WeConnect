@@ -24,7 +24,7 @@ def create_user():
     try:
         data = validate.validator(dict_data)
     except AssertionError as error:
-        return jsonify({"message": error.args[0]})
+        return jsonify({"message": error.args[0]}), 401
     available_emails = Users.query.filter_by(email=data['email']).first()
     if available_emails == None:
         """checks if email duplicate email"""
@@ -48,7 +48,7 @@ def login():
         data = validate.login_validator(dict_data)
 
     except AssertionError as error:
-        return jsonify({"message": error.args[0]})
+        return jsonify({"message": error.args[0]}), 401
 
     """seach user in db"""
     user = Users.query.filter_by(email=dict_data.get('email')).first()
