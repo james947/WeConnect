@@ -16,7 +16,7 @@ def register_business(current_user):
     try:
         data = validate.biz_validator(dict_data)
     except AssertionError as error:
-        return jsonify({"message": error.args[0]})
+        return jsonify({"message": error.args[0]}) , 401
 
     """checks if business is duplicate """
     duplicate = Business.query.filter_by(
@@ -127,7 +127,7 @@ def add_review(current_user, id):
         try:
             data=validate.review_validator(dict_data)
         except AssertionError as error:
-            return jsonify({"message": error.args[0]})
+            return jsonify({"message": error.args[0]}) , 401
 
         business_id=get_business.id
         owner_id=current_user.id
