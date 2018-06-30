@@ -113,7 +113,7 @@ def reset_password():
             subject="Password Reset",
             sender='hcravens25@gmail.com',
             recipients=[get_email.email],
-            body="Hello" + get_email.username + ",\n Your new password is:" + password
+            body=" Hello " + get_email.username + ",\n Your new password is: " + password
         )
         mail.send(message)
         return jsonify({'message': 'An email has been sent with your new password!'}), 200
