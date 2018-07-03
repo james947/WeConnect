@@ -38,7 +38,7 @@ def get_all_businesses():
     """Returns the requested business all the registered businesses"""
 
     page = request.args.get('page', 1, type=int)
-    limit = request.args.get('limit', 5, type=int)
+    limit = request.args.get('limit', 6, type=int)
     category = request.args.get('category', '', type=str)
     location = request.args.get('location', '', type=str)
     search = request.args.get('q', '', type=str)
