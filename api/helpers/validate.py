@@ -118,6 +118,4 @@ def update_validator(dict_data):
             update_dict[key] = dict_data[key]
     
 
-    blank(update_dict)
-
     return update_dict
