@@ -128,7 +128,7 @@ def add_review(current_user, id):
         business_id=get_business.id
         owner_id=current_user.id
         if owner_id == get_business.owner_id:
-            return jsonify({'message': 'You cannot review your Business'})
+            return jsonify({'message': 'You cannot review your Business'}), 401
 
         new_review=Reviews(title=data.get('title'), review=data.get('review'),
                              business_id=get_business.id, owner_id=current_user.id)
