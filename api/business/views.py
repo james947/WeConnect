@@ -134,8 +134,8 @@ def add_review(current_user, id):
                              business_id=get_business.id, owner_id=current_user.id)
         db.session.add(new_review)
         db.session.commit()
-        return jsonify({'message': 'Review Added Successfully'}), 201
-    return jsonify({'message': 'Business not found'}), 201
+        return jsonify({'message': 'Review Added Successfully'}), 200
+    return jsonify({'message': 'Business not found'}), 404
 
 
 @biz.route('/api/v1/businesses/<int:id>/reviews', methods=['GET'])
