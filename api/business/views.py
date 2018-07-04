@@ -84,10 +84,6 @@ def update_by_id(current_user, business_id):
     except AssertionError as error:
         return jsonify({"message": error.args[0]})
 
-    check_duplication = Business.query.filter_by(businessname=data.get('businessname')).first()
-    if check_duplication:
-       return jsonify({'message': 'Business already exist'}), 409
-
     get_business = Business.query.filter_by(id=business_id).first()
    
     if current_user.id != get_business.owner_id:
