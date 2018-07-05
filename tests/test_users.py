@@ -119,5 +119,5 @@ class TestUsersTestcase(BaseTestCase):
         self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         logout = self.client.delete('/api/v1/auth/logout', data=json.dumps(
-            dict(email="james20@yahoo.com")), headers={"x-access-token": token})
+            dict(email="james20@yahoo.com")), headers={"Authorization": token})
         self.assertIn("Logged out successully", logout["message"])

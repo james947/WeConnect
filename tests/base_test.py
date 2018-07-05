@@ -69,7 +69,7 @@ class BaseTestCase(TestCase):
         }
         resp = self.client.post(
             '/api/v1/businesses',
-            headers={'x-access-token': token},
+            headers={'Authorization': token},
             data=json.dumps(business),
             content_type='application/json'
         )
@@ -80,7 +80,7 @@ class BaseTestCase(TestCase):
         data = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses',
                                 data=json.dumps(self.business),
-                                headers={"x-access-token": data})
+                                headers={"Authorization": data})
 
         return resp
 
@@ -94,7 +94,7 @@ class BaseTestCase(TestCase):
         }
         resp = self.client.post(
             '/api/v1/businesses',
-            headers={'x-access-token': ''},
+            headers={'Authorization': ''},
             data=json.dumps(business),
             content_type='application/json'
         )
