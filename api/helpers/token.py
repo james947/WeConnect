@@ -34,7 +34,7 @@ def token_required(f):
             token = request.headers['Authorization']
 
         if not token:
-            return jsonify({'message': 'Token is required'}), 401
+            return jsonify({'message': 'Please log in to access'}), 401
 
         message, is_error = validate_token(token)
         if is_error:
