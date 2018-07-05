@@ -9,12 +9,12 @@ class TestUsersTestcase(BaseTestCase):
         user1 = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/businesses', data=json.dumps(self.business),
-                                    content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"Authorization": token})
         self.person['email'] = 'muthash@gmail.com'
         user2 = self.register_user()
         token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews),
-                                content_type="application/json", headers={"x-access-token": token2})
+                                content_type="application/json", headers={"Authorization": token2})
         response_msg = json.loads(resp.data.decode())
         self.assertIn("Review Added Successfully", response_msg["message"])
 
@@ -23,12 +23,12 @@ class TestUsersTestcase(BaseTestCase):
         user1 = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/businesses', data=json.dumps(self.business),
-                                    content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"Authorization": token})
         self.person['email'] = 'muthash@gmail.com'
         user2 = self.register_user()
         token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews2),
-                                content_type="application/json", headers={"x-access-token": token2})
+                                content_type="application/json", headers={"Authorization": token2})
         response_msg = json.loads(resp.data.decode())
         self.assertIn("title is required", response_msg["message"])
 
@@ -39,12 +39,12 @@ class TestUsersTestcase(BaseTestCase):
         user1 = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/businesses', data=json.dumps(self.business),
-                                    content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"Authorization": token})
         self.person['email'] = 'muthash@gmail.com'
         user2 = self.register_user()
         token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews3),
-                                content_type="application/json", headers={"x-access-token": token2})
+                                content_type="application/json", headers={"Authorization": token2})
         response_msg = json.loads(resp.data.decode())
         self.assertIn("review is required", response_msg["message"])
 
@@ -53,12 +53,12 @@ class TestUsersTestcase(BaseTestCase):
         user1 = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/businesses', data=json.dumps(self.business),
-                                    content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"Authorization": token})
         self.person['email'] = 'muthash@gmail.com'
         user2 = self.register_user()
         token2 = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews),
-                                content_type="application/json", headers={"x-access-token": token2})
+                                content_type="application/json", headers={"Authorization": token2})
         review = self.client.get('/api/v1/businesses/1/reviews')
         self.assertEqual(review.status_code, 200)
 
@@ -73,9 +73,9 @@ class TestUsersTestcase(BaseTestCase):
         reg = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         response = self.client.post('/api/v1/businesses', data=json.dumps(self.business),
-                                    content_type="application/json", headers={"x-access-token": token})
+                                    content_type="application/json", headers={"Authorization": token})
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews),
-                                content_type="application/json", headers={"x-access-token": token})
+                                content_type="application/json", headers={"Authorization": token})
         response_msg = json.loads(resp.data.decode())
         self.assertEqual('You cannot review your Business',
                          response_msg['message'])
@@ -84,7 +84,7 @@ class TestUsersTestcase(BaseTestCase):
         reg = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.post('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews),
-                                content_type="application/json", headers={"x-access-token": token})
+                                content_type="application/json", headers={"Authorization": token})
         response_msg = json.loads(resp.data.decode())
         self.assertEqual('Business not found', response_msg['message'])
 
@@ -92,6 +92,6 @@ class TestUsersTestcase(BaseTestCase):
         reg = self.register_user()
         token = json.loads(self.login_user().data.decode("UTF-8"))['token']
         resp = self.client.get('/api/v1/businesses/1/reviews', data=json.dumps(self.reviews),
-                               content_type="application/json", headers={"x-access-token": token})
+                               content_type="application/json", headers={"Authorization": token})
         response_msg = json.loads(resp.data.decode())
         self.assertEqual('Business not found', response_msg['message'])

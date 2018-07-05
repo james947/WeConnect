@@ -30,7 +30,7 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        if 'x-access-token' in request.headers:
+        if 'Authorization' in request.headers:
             token = request.headers['Authorization']
 
         if not token:
